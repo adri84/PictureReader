@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="PictureReader.view.WindowController">
+  <top>
+    <MenuBar prefWidth="200.0" BorderPane.alignment="CENTER">
+      <menus>
+        <Menu mnemonicParsing="false" text="%button.file">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#openDir" text="%button.file.open" />
+            <MenuItem mnemonicParsing="false" onAction="#saveas" text="%button.file.save" />
+            <MenuItem mnemonicParsing="false" onAction="#closeWindow" text="%button.file.exit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="%button.edit">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#rename" text="%button.edit.rename" />
+            <MenuItem mnemonicParsing="false" onAction="#addTag" text="%button.edit.addtag" />
+            <Menu mnemonicParsing="false" onAction="#modTag" text="%button.edit.edittag">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Tag1" />
+                <MenuItem mnemonicParsing="false" text="Tag2" />
+                <MenuItem mnemonicParsing="false" text="Tag3" />
+              </items>
+            </Menu>
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="%button.lang">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#changeToEn" text="%button.lang.en" />
+            <MenuItem mnemonicParsing="false" onAction="#changeToFr" text="%button.lang.fr" />
+            <MenuItem mnemonicParsing="false" onAction="#changeToRu" text="%button.lang.ru" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="%button.help">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#about" text="%button.help.about" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+  </top>
+   <right>
+      <ListView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </right>
+</BorderPane>
