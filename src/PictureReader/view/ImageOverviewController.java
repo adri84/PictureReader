@@ -50,4 +50,20 @@ public class ImageOverviewController {
     }
 
 
+    /**
+     * Is called by the main application to give a reference back to itself.
+     *
+     * @param mainApp
+     */
+
+    /* inutile je pense
+
+    public void setMainApp(MainApp mainApp) {
+        this.mainApp = mainApp;
+
+        // Add observable list data to the table
+        imageTable.setItems(mainApp.getImageData());
+    }
+
+    */
 }

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -47,10 +50,21 @@
       <ListView prefWidth="200.0" BorderPane.alignment="CENTER" />
    </right>
    <bottom>
-      <ToolBar prefHeight="18.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+      <ToolBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0">
         <items>
-          <Button mnemonicParsing="false" text="Button" />
+            <TextField>
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor>
+            </TextField>
+          <Button mnemonicParsing="false" text="%button.search" />
         </items>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
       </ToolBar>
    </bottom>
 </BorderPane>

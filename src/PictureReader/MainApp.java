@@ -72,7 +72,6 @@ public class MainApp extends Application {
             rootLayout = (BorderPane) fxmlLoader.load();
 
             changeImagePath();
-            //showImageOverview("/Users/adriansalas/Pictures/SpacePics/");
 
             rootLayout.setCenter(imageOverview);
 
