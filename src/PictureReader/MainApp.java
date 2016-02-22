@@ -8,28 +8,38 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import PictureReader.model.Image;
+import PictureReader.view.WindowController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.util.BuilderFactory;
 
 
 public class MainApp extends Application {
 
-    private Stage primaryStage;
-    private BorderPane rootLayout;
+    public Stage primaryStage;
+    public BorderPane rootLayout;
+    public Scene scene;
+    public WindowController controller;
+    public ScrollPane imageOverview;
+    public Locale mainLocale;
 
     /**
      * The data as an observable list of Persons.
@@ -41,29 +51,32 @@ public class MainApp extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("PictureReader");
 
-        initRootLayout(new Locale("en", "EN"));
-
-
-        showImageOverview("/Users/adriansalas/Pictures/SpacePics/");
+        mainLocale = new Locale("fr");
+        initRootLayout();
     }
 
-    public MainApp() {
-    }
 
     /**
      * Initializes the root layout.
      */
-    public void initRootLayout(Locale locale) {
+    public void initRootLayout() {
         try {
-            // Load root layout from fxml file.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
-            loader.setResources(ResourceBundle.getBundle("PictureReader/ButtonsNames", locale));
-            rootLayout = (BorderPane) loader.load();
 
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", parseLocale()));
+            fxmlLoader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
+            WindowController c = new WindowController(this);
+            fxmlLoader.setController(c);
+
+            rootLayout = (BorderPane) fxmlLoader.load();
+
+            showImageOverview("/Users/adriansalas/Pictures/SpacePics/");
+
+            rootLayout.setCenter(imageOverview);
 
             // Show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout);
+            scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.show();
 
@@ -72,28 +85,70 @@ public class MainApp extends Application {
         }
     }
 
-    /**
-     * Shows the person overview inside the root layout.
-     */
+    public UTF8Control parseLocale() {
+        UTF8Control utf8c = new UTF8Control();
+        utf8c.setL(mainLocale);
+        return utf8c;
+    }
+
+    public void reloadRootLayout(Locale locale) throws IOException {
+
+
+        mainLocale =  null;
+        mainLocale = locale;
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", parseLocale()));
+        fxmlLoader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
+
+        WindowController c = new WindowController(this);
+        fxmlLoader.setController(c);
+
+        rootLayout = (BorderPane) fxmlLoader.load();
+        rootLayout.setCenter(imageOverview);
+
+        scene = new Scene(rootLayout);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+    }
+
     public void showImageOverview(String path) {
         try {
             // Load person overview.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/ImageOverview.fxml"));
-            ScrollPane imageOverview = (ScrollPane) loader.load();
 
+            imageOverview = (ScrollPane) loader.load();
             imageOverview.setContent(setTileContent(path));
 
-            // Set image overview into the center of root layout.
-            rootLayout.setCenter(imageOverview);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void setLanguage() {
-        //loadView()
+    public void setLanguage(Locale locale) {
+
+        try {
+            this.mainLocale = locale;
+            this.reloadRootLayout(mainLocale);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeImagePath() {
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        File selectedDirectory = directoryChooser.showDialog(primaryStage);
+
+        if (selectedDirectory != null) {
+            imageData.clear();
+            System.out.print(selectedDirectory.getAbsolutePath());
+            this.showImageOverview(selectedDirectory.getAbsolutePath());
+            rootLayout.setCenter(imageOverview);
+        }
     }
 
 
@@ -108,9 +163,15 @@ public class MainApp extends Application {
         File[] listOfFiles = folder.listFiles();
 
         for (final File file : listOfFiles) {
-            ImageView imageView;
-            imageView = createImageView(file);
-            tile.getChildren().addAll(imageView);
+
+            String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1, file.getName().length());
+
+            if(extension.equals("jpg") || extension.equals("png")) {
+                Image img = new Image(createImageView(file),file.getName(),file.getPath());
+                imageData.add(img);
+                tile.getChildren().addAll(img.imageView);
+            }
+
         }
 
         return tile;
@@ -119,16 +180,13 @@ public class MainApp extends Application {
 
 
     private ImageView createImageView(final File imageFile) {
-        // DEFAULT_THUMBNAIL_WIDTH is a constant you need to define
-        // The last two arguments are: preserveRatio, and use smooth (slower)
-        // resizing
 
         ImageView imageView = null;
         try {
-            final javafx.scene.image.Image image = new javafx.scene.image.Image(new FileInputStream(imageFile), 150, 0, true,
-                    true);
+            final javafx.scene.image.Image image = new javafx.scene.image.Image(new FileInputStream(imageFile), 150, 0, true, true);
             imageView = new ImageView(image);
             imageView.setFitWidth(150);
+            final ImageView finalImageView = imageView;
             imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
                 @Override
@@ -162,6 +220,16 @@ public class MainApp extends Application {
                             }
 
                         }
+
+                        if(mouseEvent.getClickCount() == 1){
+
+                            finalImageView.setStyle("-fx-focus-color: BLACK");
+                            //textField.setStyle("-fx-focus-color: -fx-control-inner-background ; -fx-faint-focus-color: -fx-control-inner-background ;");
+
+                                System.out.println(imageFile.getName());
+
+
+                        }
                     }
                 }
             });
@@ -172,13 +240,6 @@ public class MainApp extends Application {
     }
 
 
-    /**
-     * Returns the main stage.
-     * @return
-     */
-    public Stage getPrimaryStage() {
-        return primaryStage;
-    }
 
     public ObservableList<Image> getImageData() {
         return imageData;

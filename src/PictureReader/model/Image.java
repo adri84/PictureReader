@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.image.ImageView;
 
 /**
  * Model class for an image.
@@ -18,12 +19,13 @@ public class Image {
 
     private final StringProperty imagePath;
     private final StringProperty imageName;
+    public ImageView imageView;
 
     /**
      * Default constructor.
      */
     public Image() {
-        this(null, null);
+        this(null,null, null);
     }
 
     /**
@@ -32,7 +34,8 @@ public class Image {
      * @param imagePath
      * @param imageName
      */
-    public Image(String imagePath, String imageName) {
+    public Image(ImageView imgView, String imagePath, String imageName) {
+        this.imageView = imgView;
         this.imagePath = new SimpleStringProperty(imagePath);
         this.imageName = new SimpleStringProperty(imageName);
 
@@ -48,5 +51,9 @@ public class Image {
 
     public void setImagePath(String imagePath) {
         this.imagePath.set(imagePath);
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
     }
 }

@@ -3,18 +3,29 @@ package PictureReader.view;
 import PictureReader.MainApp;
 import javafx.fxml.FXML;
 
+import java.util.Locale;
+
 /**
  * Created by adriansalas on 16/02/2016.
  */
 public class WindowController {
 
-    // Reference to the main application.
     private MainApp mainApp;
 
     @FXML
     private void openDir() {
+
         System.out.println("open directory");
+        mainApp.changeImagePath();
+
+
     }
+
+
+    public WindowController(MainApp s) {
+        this.mainApp = s;
+    }
+
 
     @FXML
     private void saveas() {
@@ -46,17 +57,21 @@ public class WindowController {
 
     @FXML
     private void changeToFr() {
+
         System.out.println("change to french");
+        mainApp.setLanguage(new Locale("fr"));
     }
 
     @FXML
     private void changeToEn() {
         System.out.println("change to english");
+        mainApp.setLanguage(new Locale("en"));
     }
 
     @FXML
     private void changeToRu() {
         System.out.println("change to russian");
+        mainApp.setLanguage(new Locale("ru"));
     }
 
     @FXML

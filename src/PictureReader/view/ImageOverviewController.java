@@ -49,15 +49,5 @@ public class ImageOverviewController {
         //lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
     }
 
-    /**
-     * Is called by the main application to give a reference back to itself.
-     *
-     * @param mainApp
-     */
-    public void setMainApp(MainApp mainApp) {
-        this.mainApp = mainApp;
 
-        // Add observable list data to the table
-        imageTable.setItems(mainApp.getImageData());
-    }
 }
