@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TextField fx:id="nameText" layoutX="17.0" layoutY="30.0" promptText="%image.label.text" />
+      <Label layoutX="41.0" layoutY="6.0" text="%image.label.name" textAlignment="CENTER" />
+      <Label layoutX="48.0" layoutY="126.0" text="%image.label.tag" />
+      <ListView fx:id="listBoxMain" editable="true" layoutY="155.0" prefHeight="141.0" prefWidth="200.0" />
+      <TextField fx:id="inputTextTag" layoutX="17.0" layoutY="329.0" promptText="%image.text.add.tag" />
+      <Label layoutX="35.0" layoutY="304.0" text="%image.label.add.tag" />
+      <Button layoutX="52.0" layoutY="363.0" mnemonicParsing="false" onAction="#addTag" prefHeight="21.0" prefWidth="96.0" text="%image.button.add.tag">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+      <Button layoutX="52.0" layoutY="65.0" mnemonicParsing="false" onAction="#saveNameChanges" prefHeight="21.0" prefWidth="96.0" text="Save">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+      <Separator layoutY="93.0" prefHeight="27.0" prefWidth="200.0" />
+   </children>
+</Pane>

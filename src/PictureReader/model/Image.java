@@ -1,6 +1,7 @@
 package PictureReader.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -20,12 +21,13 @@ public class Image {
     private final StringProperty imagePath;
     private final StringProperty imageName;
     public ImageView imageView;
+    public ArrayList<String> tags;
 
     /**
      * Default constructor.
      */
     public Image() {
-        this(null,null, null);
+        this(null,null,null);
     }
 
     /**
@@ -38,22 +40,42 @@ public class Image {
         this.imageView = imgView;
         this.imagePath = new SimpleStringProperty(imagePath);
         this.imageName = new SimpleStringProperty(imageName);
+        this.tags = new ArrayList<String>();
 
     }
 
-    public String getImageName() {
-        return imageName.get();
-    }
-
-    public StringProperty imageNameProperty() {
-        return imageName;
+    public String getImagePath() {
+        return imagePath.get();
     }
 
     public void setImagePath(String imagePath) {
         this.imagePath.set(imagePath);
     }
 
+    public String getImageName() {
+        return imageName.get();
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName.set(imageName);
+    }
+
     public void setImageView(ImageView imageView) {
         this.imageView = imageView;
     }
+
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
+    }
+
+
+
+
+
+
+
 }

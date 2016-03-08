@@ -1,8 +1,9 @@
-package PictureReader.view;
+package PictureReader.controller;
 
 import PictureReader.MainApp;
 import javafx.fxml.FXML;
 
+import java.awt.*;
 import java.util.Locale;
 
 /**
@@ -13,12 +14,13 @@ public class WindowController {
     private MainApp mainApp;
 
     @FXML
+    private TextField txt;
+
+    @FXML
     private void openDir() {
-
         System.out.println("open directory");
+        mainApp.createMetadata();
         mainApp.changeImagePath();
-
-
     }
 
 
@@ -30,10 +32,12 @@ public class WindowController {
     @FXML
     private void saveas() {
         System.out.println("save as");
+        mainApp.createMetadata();
     }
 
     @FXML
     private void closeWindow() {
+        mainApp.createMetadata();
         System.exit(1);
     }
 
@@ -59,23 +63,24 @@ public class WindowController {
     private void changeToFr() {
 
         System.out.println("change to french");
-        mainApp.setLanguage(new Locale("fr"));
+        mainApp.setLanguage("fr");
     }
 
     @FXML
     private void changeToEn() {
         System.out.println("change to english");
-        mainApp.setLanguage(new Locale("en"));
-    }
+        mainApp.setLanguage("en");    }
 
     @FXML
     private void changeToRu() {
         System.out.println("change to russian");
-        mainApp.setLanguage(new Locale("ru"));
+        mainApp.setLanguage("ru");
     }
 
     @FXML
     private void about() {
         System.out.println("about");
     }
+
+
 }
