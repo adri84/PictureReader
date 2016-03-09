@@ -5,8 +5,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-import java.awt.*;
-
 /**
  * Created by adriansalas on 16/02/2016.
  */
@@ -14,8 +12,6 @@ public class WindowController {
 
     private MainApp mainApp;
 
-    @FXML
-    private TextField txt;
 
     @FXML
     private void openDir() {
@@ -36,10 +32,6 @@ public class WindowController {
         mainApp.createMetadata();
     }
 
-    @FXML
-    private void closeWindow() {
-        System.exit(1);
-    }
 
     @FXML
     public void exitApplication(ActionEvent event) {

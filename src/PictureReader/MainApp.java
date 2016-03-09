@@ -39,6 +39,7 @@ public class MainApp extends Application {
     public ImageDataOverviewController dataOverviewC;
     public Image selectedImage;
     public String currentPath;
+    boolean metadataCreated = false;
 
     /**
      * The data as an observable list of Persons.
@@ -50,8 +51,10 @@ public class MainApp extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("PictureReader");
 
+
         mainLocale = new Locale("en");
         initRootLayout();
+
     }
 
 
@@ -72,6 +75,7 @@ public class MainApp extends Application {
 
             changeImagePath();
             showDataOverview();
+
 
             rootLayout.setCenter(imageOverview);
             rootLayout.setRight(imageDataView);
@@ -101,6 +105,7 @@ public class MainApp extends Application {
 
         showDataOverview();
 
+
         rootLayout = (BorderPane) fxmlLoader.load();
         rootLayout.setCenter(imageOverview);
         rootLayout.setRight(imageDataView);
@@ -129,7 +134,12 @@ public class MainApp extends Application {
 
     @Override
     public void stop(){
-        createMetadata();
+
+        while(!metadataCreated) {
+            metadataCreated = createMetadata();
+        }
+
+
         System.out.println("Stage is closing");
     }
 
@@ -353,14 +363,14 @@ public class MainApp extends Application {
 
     }
 
-    public void createMetadata() {
+    public boolean createMetadata() {
 
         File dir = new File (currentPath+"/.metadata");
         dir.mkdirs();
 
         FileWriter fw;
 
-        for (int i = 0; i <imageData.size() ; i++) {
+        for (int i = 0; i < imageData.size() ; i++) {
 
             String tmp = currentPath+"/.metadata/"+imageData.get(i).getImageName();
 
@@ -378,12 +388,43 @@ public class MainApp extends Application {
                 fw.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+                return false;
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }
 
         }
+
+        return true;
     }
+
+    public void saveImageMetadata(Image modImage) {
+
+        FileWriter fw;
+        String path = currentPath + "/.metadata/" + modImage.getImageName().substring(0, modImage.getImageName().lastIndexOf('.'));
+
+        ArrayList<String> tags = modImage.getTags();
+
+        try {
+
+            fw = new FileWriter(path);
+            String str = "";
+
+            for (int i = 0; i < tags.size(); i++) {
+                str += tags.get(i) + "\n";
+            }
+
+            fw.write(str);
+            fw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public void searchByTags() {
         // chercher par tags
@@ -413,8 +454,11 @@ public class MainApp extends Application {
 
 
         imageData.clear();
+        selectedImage.imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.0), 0, 0, 0, 0);");
+
         this.showImageOverview(currentPath);
         rootLayout.setCenter(imageOverview);
+
 
 
 
