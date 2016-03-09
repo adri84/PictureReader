@@ -22,6 +22,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -386,14 +387,20 @@ public class MainApp extends Application {
         String extension = currentImage.getImagePath().substring(currentImage.getImagePath().lastIndexOf(".") + 1, currentImage.getImagePath().length());
 
 
-        File oldMetadataFile =new File(currentPath + "/metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
-        File newMetadataFile =new File(currentPath + "/metadata/" + newName);
+        File oldMetadataFile = new File(currentPath + "/metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
+        File newMetadataFile = new File(currentPath + "/metadata/" + newName);
 
-        File oldImage =new File(currentPath + "/" + currentImage.getImageName());
-        File newImage =new File(currentPath + "/" + newName + "." + extension);
+        File oldImage = new File(currentPath + "/" + currentImage.getImageName());
+        File newImage = new File(currentPath + "/" + newName + "." + extension);
 
-        oldImage.renameTo(newImage);
-        oldMetadataFile.renameTo(newMetadataFile);
+        try {
+            Files.move(new File(currentPath + "/" + currentImage.getImageName()).toPath(), new File(currentPath + "/" + newName + "." + extension).toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            Files.move(new File(currentPath + "/metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.'))).toPath(), new File(currentPath + "/metadata/" + newName).toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            System.out.print("Marche pas");
+        }
+
+        //oldMetadataFile.renameTo(newMetadataFile);
 
         currentImage.setImageName(newName);
         currentImage.setImagePath(currentPath + "/" + newName);
@@ -403,40 +410,12 @@ public class MainApp extends Application {
         imageData.clear();
         this.showImageOverview(currentPath);
         rootLayout.setCenter(imageOverview);
+
+
+
+
     }
 
-    /*
-    public void renameFile2(Image currentImage, String newName) throws IOException {
-
-
-        File srcFile = new File(currentImage.getImagePath());
-
-        boolean bSucceeded = false;
-
-        try {
-            File destFile = new File(newName);
-
-            if (destFile.exists()) {
-                if (!destFile.delete()) {
-                    throw new IOException(oldName + " was not successfully renamed to " + newName);
-                }
-            }
-            if (!srcFile.renameTo(destFile))        {
-                throw new IOException(oldName + " was not successfully renamed to " + newName);
-            } else {
-                bSucceeded = true;
-            }
-        } finally {
-            if (bSucceeded) {
-                srcFile.delete();
-            }
-        }
-
-        imageData.clear();
-        this.showImageOverview(currentPath);
-        rootLayout.setCenter(imageOverview);
-    }
-    */
 
     public boolean renameFile(File oldFile, File newFile) {
 
