@@ -1,10 +1,11 @@
 package PictureReader.controller;
 
 import PictureReader.MainApp;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import java.awt.*;
-import java.util.Locale;
 
 /**
  * Created by adriansalas on 16/02/2016.
@@ -37,8 +38,12 @@ public class WindowController {
 
     @FXML
     private void closeWindow() {
-        mainApp.createMetadata();
         System.exit(1);
+    }
+
+    @FXML
+    public void exitApplication(ActionEvent event) {
+        Platform.exit();
     }
 
     @FXML

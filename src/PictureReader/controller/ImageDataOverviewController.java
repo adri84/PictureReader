@@ -95,6 +95,7 @@ public class ImageDataOverviewController implements Initializable {
             public void handle(ListView.EditEvent<String> t) {
                 listBoxMain.getItems().set(t.getIndex(), t.getNewValue());
                 System.out.println("setOnEditCommit");
+                saveTagChanges();
             }
 
         });

@@ -1,13 +1,8 @@
 package PictureReader;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import PictureReader.model.Image;
 import PictureReader.controller.ImageDataOverviewController;
 import PictureReader.controller.WindowController;
+import PictureReader.model.Image;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,6 +20,11 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 public class MainApp extends Application {
@@ -126,6 +126,12 @@ public class MainApp extends Application {
         }
     }
 
+    @Override
+    public void stop(){
+        createMetadata();
+        System.out.println("Stage is closing");
+    }
+
     public void showDataOverview() {
         try {
             // Load person overview.
@@ -179,7 +185,7 @@ public class MainApp extends Application {
 
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
-        File metadataFolder = new File(path+"/.metadata/");
+        File metadataFolder = new File(path+"/metadata/");
 
         boolean metadataIsSet = false;
         String tagsPaths = "";
@@ -262,17 +268,6 @@ public class MainApp extends Application {
         return imageData.get(pos);
     }
 
-    public int getImagePosition(String path) {
-        int pos = -1;
-
-        for (int i = 0; i < imageData.size() ; i++) {
-            if (imageData.get(i).getImagePath().equals(path)) {
-                pos = i;
-            }
-        }
-        return pos;
-    }
-
     public ArrayList<String> loadImageTags(String path) {
 
             File tagsFile = new File(path);
@@ -352,14 +347,14 @@ public class MainApp extends Application {
 
     public void createMetadata() {
 
-        File dir = new File (currentPath+"/.metadata");
+        File dir = new File (currentPath+"/metadata");
         dir.mkdirs();
 
         FileWriter fw;
 
         for (int i = 0; i <imageData.size() ; i++) {
 
-            String tmp = currentPath+"/.metadata/"+imageData.get(i).getImageName();
+            String tmp = currentPath+"/metadata/"+imageData.get(i).getImageName();
 
             String path = tmp.substring(0, tmp.lastIndexOf('.'));
 
@@ -391,8 +386,8 @@ public class MainApp extends Application {
         String extension = currentImage.getImagePath().substring(currentImage.getImagePath().lastIndexOf(".") + 1, currentImage.getImagePath().length());
 
 
-        File oldMetadataFile =new File(currentPath + "/.metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
-        File newMetadataFile =new File(currentPath + "/.metadata/" + newName);
+        File oldMetadataFile =new File(currentPath + "/metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
+        File newMetadataFile =new File(currentPath + "/metadata/" + newName);
 
         File oldImage =new File(currentPath + "/" + currentImage.getImageName());
         File newImage =new File(currentPath + "/" + newName + "." + extension);
