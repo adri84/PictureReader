@@ -138,6 +138,8 @@ public class MainApp extends Application {
         fxmlLoader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
 
 
+        windowController = new WindowController(this);
+        fxmlLoader.setController(windowController);
 
         showDataOverview();
 
@@ -203,10 +205,9 @@ public class MainApp extends Application {
             loader.setLocation(MainApp.class.getResource("view/ImageDataOverview.fxml"));
             loader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
 
-            if(dataOverviewC == null) {
-                dataOverviewC = new ImageDataOverviewController(this);
-                loader.setController(dataOverviewC);
-            }
+            dataOverviewC = new ImageDataOverviewController(this);
+            loader.setController(dataOverviewC);
+
 
             imageDataView = (Pane) loader.load();
 
