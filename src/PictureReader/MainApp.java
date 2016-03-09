@@ -392,8 +392,8 @@ public class MainApp extends Application {
         File oldImage =new File(currentPath + "/" + currentImage.getImageName());
         File newImage =new File(currentPath + "/" + newName + "." + extension);
 
-        renameFile(oldImage,newImage);
-        renameFile(oldMetadataFile,newMetadataFile);
+        oldImage.renameTo(newImage);
+        oldMetadataFile.renameTo(newMetadataFile);
 
         currentImage.setImageName(newName);
         currentImage.setImagePath(currentPath + "/" + newName);
@@ -404,6 +404,39 @@ public class MainApp extends Application {
         this.showImageOverview(currentPath);
         rootLayout.setCenter(imageOverview);
     }
+
+    /*
+    public void renameFile2(Image currentImage, String newName) throws IOException {
+
+
+        File srcFile = new File(currentImage.getImagePath());
+
+        boolean bSucceeded = false;
+
+        try {
+            File destFile = new File(newName);
+
+            if (destFile.exists()) {
+                if (!destFile.delete()) {
+                    throw new IOException(oldName + " was not successfully renamed to " + newName);
+                }
+            }
+            if (!srcFile.renameTo(destFile))        {
+                throw new IOException(oldName + " was not successfully renamed to " + newName);
+            } else {
+                bSucceeded = true;
+            }
+        } finally {
+            if (bSucceeded) {
+                srcFile.delete();
+            }
+        }
+
+        imageData.clear();
+        this.showImageOverview(currentPath);
+        rootLayout.setCenter(imageOverview);
+    }
+    */
 
     public boolean renameFile(File oldFile, File newFile) {
 
