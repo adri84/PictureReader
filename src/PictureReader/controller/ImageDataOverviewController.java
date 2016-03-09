@@ -20,27 +20,16 @@ import java.util.ResourceBundle;
 
 public class ImageDataOverviewController implements Initializable {
 
-    private final MainApp mainApp;
-
+    public final MainApp mainApp;
+    public Image currentImage;
+    public String listViewInitText;
+    final ObservableList<String> listItems;
     @FXML
     public javafx.scene.control.TextField nameText;
-
     @FXML
     public javafx.scene.control.TextField inputTextTag;
-
     @FXML
-    private ListView<String> listBoxMain;
-
-    final ObservableList<String> listItems;
-    public Image currentImage;
-    private ResourceBundle bundle;
-    private String listViewInitText;
-
-
-    public ImageDataOverviewController(MainApp mainApp) {
-        this.mainApp = mainApp;
-        listItems = FXCollections.observableArrayList();
-    }
+    public ListView<String> listBoxMain;
 
     @FXML
     public void setNameText(String s) {
@@ -58,10 +47,6 @@ public class ImageDataOverviewController implements Initializable {
         }
     }
 
-    public void setCurrentImage(Image currentImage) {
-        this.currentImage = currentImage;
-    }
-
     @FXML
     public void addTag() {
         if (!inputTextTag.getText().equals("")) {
@@ -71,7 +56,13 @@ public class ImageDataOverviewController implements Initializable {
         }
     }
 
-
+    public ImageDataOverviewController(MainApp mainApp) {
+        this.mainApp = mainApp;
+        listItems = FXCollections.observableArrayList();
+    }
+    public void setCurrentImage(Image currentImage) {
+        this.currentImage = currentImage;
+    }
     public void saveTagChanges() {
 
         ObservableList<String> tags = listBoxMain.getItems();
@@ -87,6 +78,12 @@ public class ImageDataOverviewController implements Initializable {
         this.mainApp.saveImageMetadata(this.currentImage);
     }
 
+    public void activateInputs(boolean bool) {
+
+        nameText.setDisable(bool);
+        inputTextTag.setDisable(bool);
+        listBoxMain.setDisable(bool);
+    }
 
     public void saveNameChanges() {
 
@@ -109,7 +106,6 @@ public class ImageDataOverviewController implements Initializable {
             System.out.println("Veuillez selectionner un fichier !");
         }
     }
-
     public void initializeListView() {
         listBoxMain.setItems(listItems);
 
@@ -164,7 +160,6 @@ public class ImageDataOverviewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeListView();
-
         listViewInitText = resources.getString("listview.text");
         listItems.add(listViewInitText);
     }

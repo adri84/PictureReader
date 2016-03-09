@@ -10,6 +10,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -25,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -36,25 +40,54 @@ public class MainApp extends Application {
     public ScrollPane imageOverview;
     public Pane imageDataView;
     public Locale mainLocale;
+    public WindowController windowController;
     public ImageDataOverviewController dataOverviewC;
     public Image selectedImage;
     public String currentPath;
     boolean metadataCreated = false;
 
-    /**
-     * The data as an observable list of Persons.
-     */
+
     private ObservableList<Image> imageData = FXCollections.observableArrayList();
+    private ObservableList<Image> tmpImageData = FXCollections.observableArrayList();
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("PictureReader");
 
-
         mainLocale = new Locale("en");
+        //displayFirstPopup(); // afficher popup de démmarrage
         initRootLayout();
 
+        dataOverviewC.activateInputs(true);
+
+
+    }
+
+    private void displayFirstPopup() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog with Custom Actions");
+        alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+        alert.setContentText("Choose your option.");
+
+        ButtonType buttonTypeOne = new ButtonType("French");
+        ButtonType buttonTypeTwo = new ButtonType("English");
+        ButtonType buttonTypeThree = new ButtonType("Russian");
+        ButtonType buttonTypeCancel = new ButtonType("Quit", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == buttonTypeOne){
+            mainLocale = new Locale("fr");
+        } else if (result.get() == buttonTypeTwo) {
+            mainLocale = new Locale("en");
+        } else if (result.get() == buttonTypeThree) {
+            mainLocale = new Locale("ru");
+        } else {
+            System.exit(1);
+        }
     }
 
 
@@ -68,8 +101,9 @@ public class MainApp extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
             fxmlLoader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
-            WindowController c = new WindowController(this);
-            fxmlLoader.setController(c);
+
+            windowController = new WindowController(this);
+            fxmlLoader.setController(windowController);
 
             rootLayout = (BorderPane) fxmlLoader.load();
 
@@ -79,6 +113,9 @@ public class MainApp extends Application {
 
             rootLayout.setCenter(imageOverview);
             rootLayout.setRight(imageDataView);
+
+            selectedImage=null;
+
 
             // Show the scene containing the root layout.
             scene = new Scene(rootLayout);
@@ -100,8 +137,7 @@ public class MainApp extends Application {
         fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
         fxmlLoader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
 
-        WindowController c = new WindowController(this);
-        fxmlLoader.setController(c);
+
 
         showDataOverview();
 
@@ -109,6 +145,8 @@ public class MainApp extends Application {
         rootLayout = (BorderPane) fxmlLoader.load();
         rootLayout.setCenter(imageOverview);
         rootLayout.setRight(imageDataView);
+
+        selectedImage=null;
 
         scene = new Scene(rootLayout);
         primaryStage.setScene(scene);
@@ -126,6 +164,21 @@ public class MainApp extends Application {
             currentPath = path;
             imageOverview.setContent(setTileContent(path));
 
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showSearchImageOverview() {
+        try {
+            // Load person overview.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("view/ImageOverview.fxml"));
+
+            imageOverview = (ScrollPane) loader.load();
+            imageOverview.setContent(setTileSearchContent());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,11 +203,12 @@ public class MainApp extends Application {
             loader.setLocation(MainApp.class.getResource("view/ImageDataOverview.fxml"));
             loader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
 
-            dataOverviewC = new ImageDataOverviewController(this);
-            loader.setController(dataOverviewC);
+            if(dataOverviewC == null) {
+                dataOverviewC = new ImageDataOverviewController(this);
+                loader.setController(dataOverviewC);
+            }
 
             imageDataView = (Pane) loader.load();
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -179,6 +233,7 @@ public class MainApp extends Application {
         File selectedDirectory = directoryChooser.showDialog(primaryStage);
 
         if (selectedDirectory != null) {
+
             imageData.clear();
             this.showImageOverview(selectedDirectory.getAbsolutePath());
             rootLayout.setCenter(imageOverview);
@@ -232,6 +287,30 @@ public class MainApp extends Application {
 
         return tile;
     }
+
+    public TilePane setTileSearchContent() {
+
+        TilePane tile = new TilePane();
+        tile.setPadding(new Insets(30,30,30,30));
+        tile.setHgap(5);
+        tile.setPrefColumns(3);
+
+        for (int i = 0; i < tmpImageData.size(); i++) {
+
+            Image img = tmpImageData.get(i);
+
+            try {
+                tile.getChildren().addAll(img.imageView);
+            }
+            catch (java.lang.IllegalArgumentException ex) {
+                ex.printStackTrace();
+            }
+
+        }
+
+        return tile;
+    }
+
 
     private ImageView createImageView(final File imageFile) {
 
@@ -354,9 +433,13 @@ public class MainApp extends Application {
         if(selectedImage != null) {
 
             String toParseName = selectedImage.getImageName();
+            dataOverviewC.activateInputs(false);
             dataOverviewC.setNameText(toParseName.substring(0, toParseName.lastIndexOf('.')));
             dataOverviewC.setTags(selectedImage.tags);
             dataOverviewC.setCurrentImage(selectedImage);
+        }
+        else {
+            dataOverviewC.activateInputs(true);
         }
 
 
@@ -426,8 +509,51 @@ public class MainApp extends Application {
     }
 
 
-    public void searchByTags() {
-        // chercher par tags
+    public void searchByTags(String[] searchTags) throws IOException {
+
+
+        ObservableList<Image> toDisplay = FXCollections.observableArrayList();
+        ObservableList<Image> tmp = FXCollections.observableArrayList(imageData);
+
+        ArrayList<String> tags = null;
+
+        for (int i = 0; i < searchTags.length; i++) {
+            for (int j = 0; j < tmp.size(); j++) {
+
+                tags = tmp.get(j).getTags();
+
+                for (int k = 0; k < tags.size(); k++) {
+                    if (tags.get(k).equals(searchTags[i])) {
+                        if (!toDisplay.contains(tmp.get(j))) {
+                            toDisplay.add(tmp.get(j));
+                        }
+                    }
+                }
+            }
+        }
+
+
+        if (toDisplay.size() != 0) {
+            setTmpImageData(toDisplay);
+            showSearchImageOverview();
+            reloadRootLayout(mainLocale);
+
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Aucun résultat");
+            alert.setHeaderText("Aucun résultat n'a été trouvé pour votre recherche");
+            alert.setContentText("Retour à la vue générale");
+            alert.showAndWait();
+
+            backToMainView();
+        }
+    }
+
+    public void backToMainView() throws IOException {
+        setTmpImageData(imageData);
+        showSearchImageOverview();
+        reloadRootLayout(mainLocale);
     }
 
     public void renameImage(Image currentImage, String newName) {
@@ -455,17 +581,18 @@ public class MainApp extends Application {
 
         imageData.clear();
         selectedImage.imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.0), 0, 0, 0, 0);");
+        selectedImage = null;
 
         this.showImageOverview(currentPath);
         rootLayout.setCenter(imageOverview);
-
-
-
-
 
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void setTmpImageData(ObservableList<Image> tmpImageData) {
+        this.tmpImageData = FXCollections.observableArrayList(tmpImageData);
     }
 }

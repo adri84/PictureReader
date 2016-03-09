@@ -5,12 +5,26 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import java.io.IOException;
+
 /**
  * Created by adriansalas on 16/02/2016.
  */
 public class WindowController {
 
     private MainApp mainApp;
+
+    @FXML
+    public javafx.scene.control.TextField tagsSearchInput;
+
+    @FXML
+    public javafx.scene.control.Button tagsSearchButton;
+
+    @FXML
+    public javafx.scene.control.Button tagsSearchReset;
+
+    @FXML
+    public javafx.scene.control.Label labelResults;
 
 
     @FXML
@@ -20,6 +34,29 @@ public class WindowController {
         mainApp.changeImagePath();
     }
 
+    @FXML
+    public void searchTags() {
+
+        if (!tagsSearchInput.getText().equals("")) {
+            try {
+                mainApp.searchByTags(tagsSearchInput.getText().split(";"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Veuillez selectionner un fichier !");
+        }
+
+    }
+
+    @FXML
+    public void resetTags() {
+        try {
+            mainApp.backToMainView();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public WindowController(MainApp s) {
         this.mainApp = s;

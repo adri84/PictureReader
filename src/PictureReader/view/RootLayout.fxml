@@ -3,12 +3,14 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
   <top>
@@ -52,13 +54,21 @@
    <bottom>
       <ToolBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0">
         <items>
-            <TextField promptText="%search.text">
+            <TextField fx:id="tagsSearchInput" onAction="#searchTags" promptText="%search.text">
                <cursor>
                   <Cursor fx:constant="TEXT" />
                </cursor>
             </TextField>
-          <Button mnemonicParsing="false" text="%button.search" />
-            <Button mnemonicParsing="false" text="%button.reset" />
+          <Button fx:id="tagsSearchButton" mnemonicParsing="false" onAction="#searchTags" text="%button.search" />
+            <Button fx:id="tagsSearchReset" mnemonicParsing="false" onAction="#resetTags" text="%button.reset" />
+            <Label fx:id="labelResults" prefHeight="17.0" prefWidth="414.0" text="label.search.results" textFill="#838080">
+               <font>
+                  <Font name="Arial Italic" size="13.0" />
+               </font>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </Label>
         </items>
          <cursor>
             <Cursor fx:constant="DEFAULT" />
