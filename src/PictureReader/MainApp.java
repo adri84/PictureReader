@@ -20,6 +20,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -186,7 +187,7 @@ public class MainApp extends Application {
 
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
-        File metadataFolder = new File(path+"/metadata/");
+        File metadataFolder = new File(path+"/.metadata/");
 
         boolean metadataIsSet = false;
         String tagsPaths = "";
@@ -202,7 +203,8 @@ public class MainApp extends Application {
 
             if(extension.equals("jpg") || extension.equals("png")) {
 
-                Image img = new Image(createImageView(file),file.getPath(),file.getName());
+                Image img = null;
+                img = new Image(createImageView(file),file.getPath(),file.getName());
 
                 if (metadataIsSet) {
                     tagsPaths = metadataFolder.getAbsolutePath() + "/" + file.getName().substring(0, file.getName().lastIndexOf('.'));
@@ -228,9 +230,10 @@ public class MainApp extends Application {
 
 
         try {
-
-            final javafx.scene.image.Image image = new javafx.scene.image.Image(new FileInputStream(imageFile), 150, 0, true, true);
+            FileInputStream f = new FileInputStream(imageFile);
+            final javafx.scene.image.Image image = new javafx.scene.image.Image(f, 150, 0, true, true);
             imageView = new ImageView(image);
+            f.close();
             imageView.setFitWidth(150);
             imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -254,6 +257,8 @@ public class MainApp extends Application {
             });
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return imageView;
@@ -292,6 +297,8 @@ public class MainApp extends Application {
                     }
                 }
 
+                fileReader.close();
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -311,6 +318,7 @@ public class MainApp extends Application {
         imageView.setFitHeight(primaryStage.getHeight() - 10);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
+
         imageView.setCache(true);
         borderPane.setCenter(imageView);
         borderPane.setStyle("-fx-background-color: BLACK");
@@ -348,14 +356,14 @@ public class MainApp extends Application {
 
     public void createMetadata() {
 
-        File dir = new File (currentPath+"/metadata");
+        File dir = new File (currentPath+"/.metadata");
         dir.mkdirs();
 
         FileWriter fw;
 
         for (int i = 0; i <imageData.size() ; i++) {
 
-            String tmp = currentPath+"/metadata/"+imageData.get(i).getImageName();
+            String tmp = currentPath+"/.metadata/"+imageData.get(i).getImageName();
 
             String path = tmp.substring(0, tmp.lastIndexOf('.'));
 
@@ -386,21 +394,19 @@ public class MainApp extends Application {
 
         String extension = currentImage.getImagePath().substring(currentImage.getImagePath().lastIndexOf(".") + 1, currentImage.getImagePath().length());
 
+        File oldMetadataFile =new File(currentPath + "/.metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
+        File newMetadataFile =new File(currentPath + "/.metadata/" + newName);
 
-        File oldMetadataFile = new File(currentPath + "/metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
-        File newMetadataFile = new File(currentPath + "/metadata/" + newName);
+        File oldImage =new File(currentPath + "/" + currentImage.getImageName());
+        File newImage =new File(currentPath + "/" + newName + "." + extension);
 
-        File oldImage = new File(currentPath + "/" + currentImage.getImageName());
-        File newImage = new File(currentPath + "/" + newName + "." + extension);
 
         try {
-            Files.move(new File(currentPath + "/" + currentImage.getImageName()).toPath(), new File(currentPath + "/" + newName + "." + extension).toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            Files.move(new File(currentPath + "/metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.'))).toPath(), new File(currentPath + "/metadata/" + newName).toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ex) {
-            System.out.print("Marche pas");
+            FileUtils.moveFile(oldMetadataFile,newMetadataFile);
+            FileUtils.moveFile(oldImage,newImage);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        //oldMetadataFile.renameTo(newMetadataFile);
 
         currentImage.setImageName(newName);
         currentImage.setImagePath(currentPath + "/" + newName);
@@ -414,16 +420,6 @@ public class MainApp extends Application {
 
 
 
-    }
-
-
-    public boolean renameFile(File oldFile, File newFile) {
-
-        if(oldFile.renameTo(newFile)){
-            return true;
-        }else{
-        }
-        return false;
     }
 
     public static void main(String[] args) {
