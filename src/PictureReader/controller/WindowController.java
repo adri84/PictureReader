@@ -4,15 +4,19 @@ import PictureReader.MainApp;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * Created by adriansalas on 16/02/2016.
  */
-public class WindowController {
+public class WindowController implements Initializable{
 
     private MainApp mainApp;
+    private ResourceBundle resource;
 
     @FXML
     public javafx.scene.control.TextField tagsSearchInput;
@@ -44,7 +48,7 @@ public class WindowController {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Veuillez selectionner un fichier !");
+            setLabelText("Vous devez entrer des mots clés");
         }
 
     }
@@ -52,7 +56,7 @@ public class WindowController {
     @FXML
     public void resetTags() {
         try {
-            mainApp.backToMainView();
+            mainApp.backToMainView("vue reset");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,5 +120,14 @@ public class WindowController {
         System.out.println("about");
     }
 
+    public void setLabelText(String text) {
+        this.labelResults.setText(text);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.resource = resources;
+        labelResults.setText("test");
+    }
 
 }

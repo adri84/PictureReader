@@ -219,9 +219,7 @@ public class MainApp extends Application {
     public void setLanguage(String locale) {
 
         try {
-            this.mainLocale = null;
-            Locale test = new Locale(locale);
-            this.mainLocale = test;
+            this.mainLocale = new Locale(locale);
             this.reloadRootLayout(mainLocale);
         } catch (IOException e) {
             e.printStackTrace();
@@ -538,6 +536,7 @@ public class MainApp extends Application {
             setTmpImageData(toDisplay);
             showSearchImageOverview();
             reloadRootLayout(mainLocale);
+            windowController.setLabelText("trouvé"+toDisplay.size()+"résultats");
 
         }
         else {
@@ -546,15 +545,17 @@ public class MainApp extends Application {
             alert.setHeaderText("Aucun résultat n'a été trouvé pour votre recherche");
             alert.setContentText("Retour à la vue générale");
             alert.showAndWait();
-
-            backToMainView();
+            backToMainView("aucun res");
         }
     }
 
-    public void backToMainView() throws IOException {
+    public void backToMainView(String resultat) throws IOException {
         setTmpImageData(imageData);
         showSearchImageOverview();
         reloadRootLayout(mainLocale);
+        windowController.setLabelText(resultat);
+
+
     }
 
     public void renameImage(Image currentImage, String newName) {

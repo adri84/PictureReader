@@ -61,7 +61,7 @@
             </TextField>
           <Button fx:id="tagsSearchButton" mnemonicParsing="false" onAction="#searchTags" text="%button.search" />
             <Button fx:id="tagsSearchReset" mnemonicParsing="false" onAction="#resetTags" text="%button.reset" />
-            <Label fx:id="labelResults" prefHeight="17.0" prefWidth="414.0" text="label.search.results" textFill="#838080">
+            <Label fx:id="labelResults" prefHeight="17.0" prefWidth="500.0" text="label.search.results" textFill="#838080">
                <font>
                   <Font name="Arial Italic" size="13.0" />
                </font>
