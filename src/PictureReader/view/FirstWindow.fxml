@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.TilePane?>
+
+<BorderPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <TilePane alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Choose language:">
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding></Label>
+            <Group>
+               <children>
+                  <RadioButton fx:id="radio_fr" mnemonicParsing="false" onAction="#changeLang" text="FR">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="selectLang" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="radio_en" layoutX="104.0" mnemonicParsing="false" onAction="#changeLang" selected="true" text="EN" toggleGroup="$selectLang" />
+                  <RadioButton fx:id="radio_ru" layoutX="208.0" mnemonicParsing="false" onAction="#changeLang" text="RU" toggleGroup="$selectLang" />
+               </children>
+            </Group>
+         </children>
+      </TilePane>
+   </center>
+   <bottom>
+      <ToolBar BorderPane.alignment="CENTER">
+        <items>
+          <Button mnemonicParsing="false" onAction="#openDir" prefHeight="30.0" prefWidth="190.0" text="Choose Directory" />
+            <Button mnemonicParsing="false" onAction="#exitApplication" prefHeight="30.0" prefWidth="190.0" text="Exit" />
+        </items>
+      </ToolBar>
+   </bottom>
+   <top>
+      <TilePane alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="mettre des infos ici genre bienvenue etc..">
+               <TilePane.margin>
+                  <Insets />
+               </TilePane.margin>
+               <padding>
+                  <Insets top="15.0" />
+               </padding>
+            </Label>
+         </children>
+      </TilePane>
+   </top>
+</BorderPane>

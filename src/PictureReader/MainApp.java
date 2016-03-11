@@ -1,5 +1,6 @@
 package PictureReader;
 
+import PictureReader.controller.FirstWindowController;
 import PictureReader.controller.ImageDataOverviewController;
 import PictureReader.controller.WindowController;
 import PictureReader.model.Image;
@@ -10,9 +11,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -28,7 +26,6 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -56,39 +53,34 @@ public class MainApp extends Application {
         this.primaryStage.setTitle("PictureReader");
 
         mainLocale = new Locale("en");
-        //displayFirstPopup(); // afficher popup de démmarrage
-        initRootLayout();
-
-        dataOverviewC.activateInputs(true);
-
-
+        displayFistWindow();
     }
 
-    private void displayFirstPopup() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog with Custom Actions");
-        alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
-        alert.setContentText("Choose your option.");
+    public void displayFistWindow() {
+        try {
 
-        ButtonType buttonTypeOne = new ButtonType("French");
-        ButtonType buttonTypeTwo = new ButtonType("English");
-        ButtonType buttonTypeThree = new ButtonType("Russian");
-        ButtonType buttonTypeCancel = new ButtonType("Quit", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree, buttonTypeCancel);
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(MainApp.class.getResource("view/FirstWindow.fxml"));
+            fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
 
-        Optional<ButtonType> result = alert.showAndWait();
 
-        if (result.get() == buttonTypeOne){
-            mainLocale = new Locale("fr");
-        } else if (result.get() == buttonTypeTwo) {
-            mainLocale = new Locale("en");
-        } else if (result.get() == buttonTypeThree) {
-            mainLocale = new Locale("ru");
-        } else {
-            System.exit(1);
+            FirstWindowController firstWController = new FirstWindowController(this);
+            fxmlLoader.setController(firstWController);
+
+            BorderPane firstWindow = fxmlLoader.load();
+
+            // Show the scene containing the root layout.
+            Scene s = new Scene(firstWindow);
+            primaryStage.setScene(s);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 
 
     /**
@@ -114,12 +106,13 @@ public class MainApp extends Application {
             rootLayout.setCenter(imageOverview);
             rootLayout.setRight(imageDataView);
 
-            selectedImage=null;
+            selectedImage = null;
 
 
             // Show the scene containing the root layout.
             scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
+            primaryStage.centerOnScreen();
             primaryStage.show();
 
         } catch (IOException e) {
@@ -131,6 +124,7 @@ public class MainApp extends Application {
 
         mainLocale =  null;
         mainLocale = locale;
+
 
         
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -151,6 +145,8 @@ public class MainApp extends Application {
         selectedImage=null;
 
         scene = new Scene(rootLayout);
+
+
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -193,8 +189,6 @@ public class MainApp extends Application {
         while(!metadataCreated) {
             metadataCreated = createMetadata();
         }
-
-
         System.out.println("Stage is closing");
     }
 
@@ -216,11 +210,14 @@ public class MainApp extends Application {
         }
     }
 
-    public void setLanguage(String locale) {
+    public void setLanguage(String locale, boolean reload) {
 
         try {
             this.mainLocale = new Locale(locale);
-            this.reloadRootLayout(mainLocale);
+
+            if (reload) {
+                this.reloadRootLayout(mainLocale);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -434,6 +431,7 @@ public class MainApp extends Application {
             String toParseName = selectedImage.getImageName();
             dataOverviewC.activateInputs(false);
             dataOverviewC.setNameText(toParseName.substring(0, toParseName.lastIndexOf('.')));
+            dataOverviewC.setTagText(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale).getString("image.text.add.tag"));
             dataOverviewC.setTags(selectedImage.tags);
             dataOverviewC.setCurrentImage(selectedImage);
         }
@@ -536,16 +534,23 @@ public class MainApp extends Application {
             setTmpImageData(toDisplay);
             showSearchImageOverview();
             reloadRootLayout(mainLocale);
-            windowController.setLabelText("trouvé"+toDisplay.size()+"résultats");
+            if (toDisplay.size() == 1)
+            {
+                ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale);
+                windowController.setLabelText(r.getString("search.result.found") + " " + toDisplay.size() + " " + r.getString("search.result.one"));
+            }
+            else {
+                ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale);
+                windowController.setLabelText(r.getString("search.result.found") + " " + toDisplay.size() + " " + r.getString("search.result.many"));
+            }
 
         }
         else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Aucun résultat");
-            alert.setHeaderText("Aucun résultat n'a été trouvé pour votre recherche");
-            alert.setContentText("Retour à la vue générale");
-            alert.showAndWait();
-            backToMainView("aucun res");
+            setTmpImageData(toDisplay);
+            showSearchImageOverview();
+            String label = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale).getString("search.result.null");
+            reloadRootLayout(mainLocale);
+            windowController.setLabelText(label);
         }
     }
 
@@ -554,8 +559,6 @@ public class MainApp extends Application {
         showSearchImageOverview();
         reloadRootLayout(mainLocale);
         windowController.setLabelText(resultat);
-
-
     }
 
     public void renameImage(Image currentImage, String newName) {

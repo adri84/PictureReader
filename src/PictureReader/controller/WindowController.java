@@ -56,7 +56,7 @@ public class WindowController implements Initializable{
     @FXML
     public void resetTags() {
         try {
-            mainApp.backToMainView("vue reset");
+            mainApp.backToMainView(resource.getString("search.reset"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,18 +101,18 @@ public class WindowController implements Initializable{
     private void changeToFr() {
 
         System.out.println("change to french");
-        mainApp.setLanguage("fr");
+        mainApp.setLanguage("fr",true);
     }
 
     @FXML
     private void changeToEn() {
         System.out.println("change to english");
-        mainApp.setLanguage("en");    }
+        mainApp.setLanguage("en",true);    }
 
     @FXML
     private void changeToRu() {
         System.out.println("change to russian");
-        mainApp.setLanguage("ru");
+        mainApp.setLanguage("ru",true);
     }
 
     @FXML
@@ -127,7 +127,7 @@ public class WindowController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resource = resources;
-        labelResults.setText("test");
+        labelResults.setText(resources.getString("search.text"));
     }
 
 }

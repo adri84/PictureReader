@@ -19,21 +19,7 @@
         <Menu mnemonicParsing="false" text="%button.file">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#openDir" text="%button.file.open" />
-            <MenuItem mnemonicParsing="false" onAction="#saveas" text="%button.file.save" />
             <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="%button.file.exit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="%button.edit">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#rename" text="%button.edit.rename" />
-            <MenuItem mnemonicParsing="false" onAction="#addTag" text="%button.edit.addtag" />
-            <Menu mnemonicParsing="false" onAction="#modTag" text="%button.edit.edittag">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Tag1" />
-                <MenuItem mnemonicParsing="false" text="Tag2" />
-                <MenuItem mnemonicParsing="false" text="Tag3" />
-              </items>
-            </Menu>
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="%button.lang">
@@ -52,7 +38,7 @@
     </MenuBar>
   </top>
    <bottom>
-      <ToolBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0">
+      <ToolBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="39.0" prefWidth="1000.0">
         <items>
             <TextField fx:id="tagsSearchInput" onAction="#searchTags" promptText="%search.text">
                <cursor>
@@ -61,7 +47,7 @@
             </TextField>
           <Button fx:id="tagsSearchButton" mnemonicParsing="false" onAction="#searchTags" text="%button.search" />
             <Button fx:id="tagsSearchReset" mnemonicParsing="false" onAction="#resetTags" text="%button.reset" />
-            <Label fx:id="labelResults" prefHeight="17.0" prefWidth="500.0" text="label.search.results" textFill="#838080">
+            <Label fx:id="labelResults" prefHeight="17.0" prefWidth="429.0" text="label.search.results" textFill="#838080">
                <font>
                   <Font name="Arial Italic" size="13.0" />
                </font>
@@ -73,9 +59,6 @@
          <cursor>
             <Cursor fx:constant="DEFAULT" />
          </cursor>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
       </ToolBar>
    </bottom>
 </BorderPane>

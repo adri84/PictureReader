@@ -36,6 +36,11 @@ public class ImageDataOverviewController implements Initializable {
         nameText.setText(s);
     }
 
+    public void setTagText(String s) {
+        inputTextTag.setPromptText(s);
+    }
+
+
     @FXML
     public void setTags(ArrayList<String> tags) {
         listItems.clear();
@@ -56,6 +61,20 @@ public class ImageDataOverviewController implements Initializable {
         }
     }
 
+    @FXML
+    public void acceptNameInput() {
+        if(currentImage == null) {
+            nameText.getParent().requestFocus();
+        }
+    }
+
+    @FXML
+    public void acceptTagInput() {
+        if(currentImage == null) {
+            nameText.getParent().requestFocus();
+        }
+    }
+
     public ImageDataOverviewController(MainApp mainApp) {
         this.mainApp = mainApp;
         listItems = FXCollections.observableArrayList();
@@ -63,19 +82,22 @@ public class ImageDataOverviewController implements Initializable {
     public void setCurrentImage(Image currentImage) {
         this.currentImage = currentImage;
     }
+
     public void saveTagChanges() {
 
-        ObservableList<String> tags = listBoxMain.getItems();
-        ArrayList<String> tagsList = new ArrayList<String>();
+        if (currentImage != null) {
+            ObservableList<String> tags = listBoxMain.getItems();
+            ArrayList<String> tagsList = new ArrayList<String>();
 
-        for (int i = 0; i < tags.size(); i++) {
-            if (!tags.get(i).equals("")) {
-                tagsList.add(tags.get(i));
+            for (int i = 0; i < tags.size(); i++) {
+                if (!tags.get(i).equals("")) {
+                    tagsList.add(tags.get(i));
+                }
             }
-        }
 
-        this.currentImage.setTags(tagsList);
-        this.mainApp.saveImageMetadata(this.currentImage);
+            this.currentImage.setTags(tagsList);
+            this.mainApp.saveImageMetadata(this.currentImage);
+        }
     }
 
     public void activateInputs(boolean bool) {
