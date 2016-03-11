@@ -7,14 +7,12 @@ import PictureReader.model.Image;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
@@ -46,6 +44,10 @@ public class MainApp extends Application {
 
     private ObservableList<Image> imageData = FXCollections.observableArrayList();
     private ObservableList<Image> tmpImageData = FXCollections.observableArrayList();
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -81,8 +83,6 @@ public class MainApp extends Application {
         }
     }
 
-
-
     /**
      * Initializes the root layout.
      */
@@ -97,7 +97,7 @@ public class MainApp extends Application {
             windowController = new WindowController(this);
             fxmlLoader.setController(windowController);
 
-            rootLayout = (BorderPane) fxmlLoader.load();
+            rootLayout = fxmlLoader.load();
 
             changeImagePath();
             showDataOverview();
@@ -122,11 +122,10 @@ public class MainApp extends Application {
 
     public void reloadRootLayout(Locale locale) throws IOException {
 
-        mainLocale =  null;
+        mainLocale = null;
         mainLocale = locale;
 
 
-        
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
         fxmlLoader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
@@ -138,11 +137,11 @@ public class MainApp extends Application {
         showDataOverview();
 
 
-        rootLayout = (BorderPane) fxmlLoader.load();
+        rootLayout = fxmlLoader.load();
         rootLayout.setCenter(imageOverview);
         rootLayout.setRight(imageDataView);
 
-        selectedImage=null;
+        selectedImage = null;
 
         scene = new Scene(rootLayout);
 
@@ -158,10 +157,9 @@ public class MainApp extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/ImageOverview.fxml"));
 
-            imageOverview = (ScrollPane) loader.load();
+            imageOverview = loader.load();
             currentPath = path;
             imageOverview.setContent(setTileContent(path));
-
 
 
         } catch (IOException e) {
@@ -175,7 +173,7 @@ public class MainApp extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/ImageOverview.fxml"));
 
-            imageOverview = (ScrollPane) loader.load();
+            imageOverview = loader.load();
             imageOverview.setContent(setTileSearchContent());
 
         } catch (IOException e) {
@@ -184,9 +182,9 @@ public class MainApp extends Application {
     }
 
     @Override
-    public void stop(){
+    public void stop() {
 
-        while(!metadataCreated) {
+        while (!metadataCreated) {
             metadataCreated = createMetadata();
         }
         System.out.println("Stage is closing");
@@ -202,8 +200,7 @@ public class MainApp extends Application {
             dataOverviewC = new ImageDataOverviewController(this);
             loader.setController(dataOverviewC);
 
-
-            imageDataView = (Pane) loader.load();
+            imageDataView = loader.load();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -223,7 +220,7 @@ public class MainApp extends Application {
         }
     }
 
-    public void changeImagePath() {
+    public boolean changeImagePath() {
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(primaryStage);
@@ -233,38 +230,40 @@ public class MainApp extends Application {
             imageData.clear();
             this.showImageOverview(selectedDirectory.getAbsolutePath());
             rootLayout.setCenter(imageOverview);
+            return true;
         }
+
+        return false;
     }
 
     public TilePane setTileContent(String path) {
 
         TilePane tile = new TilePane();
-        tile.setPadding(new Insets(1,1,1,1));
+        tile.setPadding(new Insets(1, 1, 1, 1));
         tile.setHgap(1);
         tile.setPrefColumns(3);
 
 
-
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
-        File metadataFolder = new File(path+"/.metadata/");
+        File metadataFolder = new File(path + "/.metadata/");
 
         boolean metadataIsSet = false;
-        String tagsPaths = "";
+        String tagsPaths;
 
         if (metadataFolder.exists()) {
             metadataIsSet = true;
         }
 
 
+        assert listOfFiles != null;
         for (final File file : listOfFiles) {
 
             String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1, file.getName().length());
 
-            if(extension.equals("jpg") || extension.equals("png")) {
+            if (extension.equals("jpg") || extension.equals("png")) {
 
-                Image img = null;
-                img = new Image(createImageView(file),file.getPath(),file.getName());
+                Image img =new Image(createImageView(file), file.getPath(), file.getName());
 
                 if (metadataIsSet) {
                     tagsPaths = metadataFolder.getAbsolutePath() + "/" + file.getName().substring(0, file.getName().lastIndexOf('.'));
@@ -287,18 +286,15 @@ public class MainApp extends Application {
     public TilePane setTileSearchContent() {
 
         TilePane tile = new TilePane();
-        tile.setPadding(new Insets(30,30,30,30));
+        tile.setPadding(new Insets(30, 30, 30, 30));
         tile.setHgap(5);
         tile.setPrefColumns(3);
 
-        for (int i = 0; i < tmpImageData.size(); i++) {
-
-            Image img = tmpImageData.get(i);
+        for (Image img : tmpImageData) {
 
             try {
                 tile.getChildren().addAll(img.imageView);
-            }
-            catch (java.lang.IllegalArgumentException ex) {
+            } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
             }
 
@@ -306,7 +302,6 @@ public class MainApp extends Application {
 
         return tile;
     }
-
 
     private ImageView createImageView(final File imageFile) {
 
@@ -319,28 +314,22 @@ public class MainApp extends Application {
             imageView = new ImageView(image);
             f.close();
             imageView.setFitWidth(150);
-            imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            imageView.setOnMouseClicked(mouseEvent -> {
+                try {
+                    if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
 
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    try {
-                        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-
-                            if(mouseEvent.getClickCount() == 1){
-                                fillImageData(imageFile);
-                            }
-
-                            if(mouseEvent.getClickCount() == 2){
-                                displayFullscreenImage(imageFile);
-                            }
+                        if (mouseEvent.getClickCount() == 1) {
+                            fillImageData(imageFile);
                         }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+
+                        if (mouseEvent.getClickCount() == 2) {
+                            displayFullscreenImage(imageFile);
+                        }
                     }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
             });
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -350,7 +339,7 @@ public class MainApp extends Application {
 
     public Image getImagePositionInArray(String path) {
         int pos = -1;
-        for (int i = 0; i < imageData.size() ; i++) {
+        for (int i = 0; i < imageData.size(); i++) {
             if (imageData.get(i).getImagePath().equals(path)) {
                 pos = i;
             }
@@ -360,34 +349,32 @@ public class MainApp extends Application {
 
     public ArrayList<String> loadImageTags(String path) {
 
-            File tagsFile = new File(path);
-            FileReader fileReader;
-            int i = 0;
-            String tags = "";
-            ArrayList<String> tagsArray = new ArrayList<String>();
+        File tagsFile = new File(path);
+        FileReader fileReader;
+        int i;
+        String tags = "";
+        ArrayList<String> tagsArray = new ArrayList<>();
 
-            try {
-                fileReader = new FileReader(tagsFile);
+        try {
+            fileReader = new FileReader(tagsFile);
 
-                while((i = fileReader.read()) != -1) {
-                    tags += (char)i;
-                }
-
-                String[] splittedTags = tags.split("\n");
-
-                for (int j = 0; j < splittedTags.length; j++) {
-                    if (!splittedTags[j].equals("")) {
-                        tagsArray.add(splittedTags[j]);
-                    }
-                }
-
-                fileReader.close();
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            while ((i = fileReader.read()) != -1) {
+                tags += (char) i;
             }
+
+            String[] splittedTags = tags.split("\n");
+
+            for (String splittedTag : splittedTags) {
+                if (!splittedTag.equals("")) {
+                    tagsArray.add(splittedTag);
+                }
+            }
+
+            fileReader.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return tagsArray;
     }
@@ -418,7 +405,7 @@ public class MainApp extends Application {
 
     public void fillImageData(File imageFile) throws FileNotFoundException {
 
-        if(selectedImage != null && getImagePositionInArray(imageFile.getPath()) != selectedImage) {
+        if (selectedImage != null && getImagePositionInArray(imageFile.getPath()) != selectedImage) {
             selectedImage.imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.0), 0, 0, 0, 0);");
         }
 
@@ -426,7 +413,7 @@ public class MainApp extends Application {
         selectedImage.imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
 
-        if(selectedImage != null) {
+        if (selectedImage != null) {
 
             String toParseName = selectedImage.getImageName();
             dataOverviewC.activateInputs(false);
@@ -434,34 +421,32 @@ public class MainApp extends Application {
             dataOverviewC.setTagText(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale).getString("image.text.add.tag"));
             dataOverviewC.setTags(selectedImage.tags);
             dataOverviewC.setCurrentImage(selectedImage);
-        }
-        else {
+        } else {
             dataOverviewC.activateInputs(true);
         }
-
 
 
     }
 
     public boolean createMetadata() {
 
-        File dir = new File (currentPath+"/.metadata");
-        dir.mkdirs();
+        File dir = new File(currentPath + "/.metadata");
+
+        dir.mkdir();
 
         FileWriter fw;
 
-        for (int i = 0; i < imageData.size() ; i++) {
+        for (Image anImageData : imageData) {
 
-            String tmp = currentPath+"/.metadata/"+imageData.get(i).getImageName();
-
+            String tmp = currentPath + "/.metadata/" + anImageData.getImageName();
             String path = tmp.substring(0, tmp.lastIndexOf('.'));
 
             try {
                 fw = new FileWriter(path);
                 String str = "";
 
-                for (int j = 0; j < imageData.get(i).getTags().size(); j++) {
-                    str += imageData.get(i).getTags().get(j)+"\n";
+                for (int j = 0; j < anImageData.getTags().size(); j++) {
+                    str += anImageData.getTags().get(j) + "\n";
                 }
 
                 fw.write(str);
@@ -491,20 +476,17 @@ public class MainApp extends Application {
             fw = new FileWriter(path);
             String str = "";
 
-            for (int i = 0; i < tags.size(); i++) {
-                str += tags.get(i) + "\n";
+            for (String tag : tags) {
+                str += tag + "\n";
             }
 
             fw.write(str);
             fw.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
-
 
     public void searchByTags(String[] searchTags) throws IOException {
 
@@ -512,20 +494,9 @@ public class MainApp extends Application {
         ObservableList<Image> toDisplay = FXCollections.observableArrayList();
         ObservableList<Image> tmp = FXCollections.observableArrayList(imageData);
 
-        ArrayList<String> tags = null;
-
-        for (int i = 0; i < searchTags.length; i++) {
-            for (int j = 0; j < tmp.size(); j++) {
-
-                tags = tmp.get(j).getTags();
-
-                for (int k = 0; k < tags.size(); k++) {
-                    if (tags.get(k).equals(searchTags[i])) {
-                        if (!toDisplay.contains(tmp.get(j))) {
-                            toDisplay.add(tmp.get(j));
-                        }
-                    }
-                }
+        for (String searchTag : searchTags) {
+            for (Image aTmp : tmp) {
+                aTmp.getTags().stream().filter(tag -> tag.equals(searchTag)).filter(tag -> !toDisplay.contains(aTmp)).forEach(tag -> toDisplay.add(aTmp));
             }
         }
 
@@ -534,18 +505,15 @@ public class MainApp extends Application {
             setTmpImageData(toDisplay);
             showSearchImageOverview();
             reloadRootLayout(mainLocale);
-            if (toDisplay.size() == 1)
-            {
+            if (toDisplay.size() == 1) {
                 ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale);
                 windowController.setLabelText(r.getString("search.result.found") + " " + toDisplay.size() + " " + r.getString("search.result.one"));
-            }
-            else {
+            } else {
                 ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale);
                 windowController.setLabelText(r.getString("search.result.found") + " " + toDisplay.size() + " " + r.getString("search.result.many"));
             }
 
-        }
-        else {
+        } else {
             setTmpImageData(toDisplay);
             showSearchImageOverview();
             String label = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale).getString("search.result.null");
@@ -565,16 +533,16 @@ public class MainApp extends Application {
 
         String extension = currentImage.getImagePath().substring(currentImage.getImagePath().lastIndexOf(".") + 1, currentImage.getImagePath().length());
 
-        File oldMetadataFile =new File(currentPath + "/.metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
-        File newMetadataFile =new File(currentPath + "/.metadata/" + newName);
+        File oldMetadataFile = new File(currentPath + "/.metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
+        File newMetadataFile = new File(currentPath + "/.metadata/" + newName);
 
-        File oldImage =new File(currentPath + "/" + currentImage.getImageName());
-        File newImage =new File(currentPath + "/" + newName + "." + extension);
+        File oldImage = new File(currentPath + "/" + currentImage.getImageName());
+        File newImage = new File(currentPath + "/" + newName + "." + extension);
 
 
         try {
-            FileUtils.moveFile(oldMetadataFile,newMetadataFile);
-            FileUtils.moveFile(oldImage,newImage);
+            FileUtils.moveFile(oldMetadataFile, newMetadataFile);
+            FileUtils.moveFile(oldImage, newImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -591,10 +559,6 @@ public class MainApp extends Application {
         this.showImageOverview(currentPath);
         rootLayout.setCenter(imageOverview);
 
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     public void setTmpImageData(ObservableList<Image> tmpImageData) {
