@@ -1,6 +1,5 @@
 package PictureReader.controller;
 
-import PictureReader.MainApp;
 import PictureReader.model.Image;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -20,7 +19,7 @@ import java.util.ResourceBundle;
 public class ImageDataOverviewController implements Initializable {
 
     //Références
-    public final MainApp mainApp;
+    public final AppController mainApp;
     final ObservableList<String> listItems;
     public Image currentImage;
 
@@ -33,7 +32,7 @@ public class ImageDataOverviewController implements Initializable {
     public String listViewInitText;
 
 
-    public ImageDataOverviewController(MainApp mainApp) {
+    public ImageDataOverviewController(AppController mainApp) {
         this.mainApp = mainApp;
         listItems = FXCollections.observableArrayList();
     }

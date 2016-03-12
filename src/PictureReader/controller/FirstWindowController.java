@@ -1,6 +1,5 @@
 package PictureReader.controller;
 
-import PictureReader.MainApp;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +14,7 @@ import java.util.ResourceBundle;
  */
 public class FirstWindowController implements Initializable{
 
-    private MainApp mainApp;
+    private AppController mainApp;
 
     @FXML
     public RadioButton radio_fr;
@@ -47,7 +46,7 @@ public class FirstWindowController implements Initializable{
     }
 
 
-    public FirstWindowController(MainApp s) {
+    public FirstWindowController(AppController s) {
         this.mainApp = s;
     }
 

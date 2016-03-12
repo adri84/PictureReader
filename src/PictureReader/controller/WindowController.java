@@ -1,6 +1,5 @@
 package PictureReader.controller;
 
-import PictureReader.MainApp;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -15,7 +14,7 @@ import java.util.ResourceBundle;
  */
 public class WindowController implements Initializable{
 
-    private MainApp mainApp;
+    private AppController mainApp;
     private ResourceBundle resource;
 
     public TextField tagsSearchInput;
@@ -23,7 +22,7 @@ public class WindowController implements Initializable{
     public Button tagsSearchReset;
     public Label labelResults;
 
-    public WindowController(MainApp s) {
+    public WindowController(AppController s) {
         this.mainApp = s;
     }
 
@@ -122,4 +121,5 @@ public class WindowController implements Initializable{
     public void setLabelText(String text) {
         this.labelResults.setText(text);
     }
+
 }
