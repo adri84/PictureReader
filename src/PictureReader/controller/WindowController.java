@@ -106,17 +106,16 @@ public class WindowController implements Initializable{
     public void setTooltips(boolean displayTooltips) {
         ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.helpTooltips");
         if (displayTooltips == true) {
-            Tooltip.install(tagsSearchInput, new Tooltip("test")); //This is for showing
-            //Tooltip.install(tagsSearchInput, new Tooltip(r.getString("test"))); //This is for showing
-            Tooltip.install(tagsSearchButton, new Tooltip("searchB")); //This is for showing
-            Tooltip.install(tagsSearchReset, new Tooltip("resetB")); //This is for showing
-            Tooltip.install(labelResults, new Tooltip("labelR")); //This is for showing
+            Tooltip.install(tagsSearchInput, new Tooltip(r.getString("search.text.desc")));
+            Tooltip.install(tagsSearchButton, new Tooltip(r.getString("button.search.desc")));
+            Tooltip.install(tagsSearchReset, new Tooltip(r.getString("button.reset.desc")));
+            Tooltip.install(labelResults, new Tooltip(r.getString("search.result.desc")));
         }
         else {
-            Tooltip.uninstall(tagsSearchInput, new Tooltip("input")); //This is for showing
-            Tooltip.uninstall(tagsSearchButton, new Tooltip("searchB")); //This is for showing
-            Tooltip.uninstall(tagsSearchReset, new Tooltip("resetB")); //This is for showing
-            Tooltip.uninstall(labelResults, new Tooltip("labelR")); //This is for showing
+            Tooltip.uninstall(tagsSearchInput, new Tooltip(r.getString("search.text.desc")));
+            Tooltip.uninstall(tagsSearchButton, new Tooltip(r.getString("button.search.desc")));
+            Tooltip.uninstall(tagsSearchReset, new Tooltip(r.getString("button.reset.desc")));
+            Tooltip.uninstall(labelResults, new Tooltip(r.getString("search.result.desc")));
         }
     }
 

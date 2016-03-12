@@ -44,6 +44,7 @@ public class ImageDataOverviewController implements Initializable {
         listViewInitText = resources.getString("listview.text");
 
         if (currentImage == null) {
+            listItems.clear();
             listItems.add(listViewInitText);
         }
     }
@@ -212,19 +213,19 @@ public class ImageDataOverviewController implements Initializable {
         ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.helpTooltips");
 
         if (displayTooltips == true) {
-            Tooltip.install(nameText, new Tooltip("test")); //This is for showing
-            Tooltip.install(saveImageButton, new Tooltip("searchB")); //This is for showing
-            Tooltip.install(listBoxMain, new Tooltip("test")); //This is for showing
-            Tooltip.install(inputTextTag, new Tooltip("resetB")); //This is for showing
-            Tooltip.install(addTagButton, new Tooltip("labelR")); //This is for showing
+            Tooltip.install(nameText, new Tooltip(r.getString("image.label.text.desc")));
+            Tooltip.install(saveImageButton, new Tooltip(r.getString("image.button.save.name.desc")));
+            Tooltip.install(listBoxMain, new Tooltip(r.getString("listview.text.desc")));
+            Tooltip.install(inputTextTag, new Tooltip(r.getString("image.text.add.tag.desc")));
+            Tooltip.install(addTagButton, new Tooltip(r.getString("image.button.add.tag.desc")));
 
         }
         else {
-            Tooltip.uninstall(nameText, new Tooltip("input")); //This is for showing
-            Tooltip.uninstall(saveImageButton, new Tooltip("searchB")); //This is for showing
-            Tooltip.uninstall(listBoxMain, new Tooltip("test")); //This is for showing
-            Tooltip.uninstall(inputTextTag, new Tooltip("resetB")); //This is for showing
-            Tooltip.uninstall(addTagButton, new Tooltip("labelR")); //This is for showing
+            Tooltip.uninstall(nameText, new Tooltip(r.getString("image.label.text.desc")));
+            Tooltip.uninstall(saveImageButton, new Tooltip(r.getString("image.button.save.name.desc")));
+            Tooltip.uninstall(listBoxMain, new Tooltip(r.getString("listview.text.desc")));
+            Tooltip.uninstall(inputTextTag, new Tooltip(r.getString("image.text.add.tag.desc")));
+            Tooltip.uninstall(addTagButton, new Tooltip(r.getString("image.button.add.tag.desc")));
         }
 
     }
