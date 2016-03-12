@@ -160,12 +160,12 @@ public class ImageDataOverviewController implements Initializable {
 
                     switch (keyPressed) {
                         case DELETE:
-                            currentImage.getTags().remove(cell.getItem());
-                            listBoxMain.getItems().remove(cell.getItem());
+                            //currentImage.getTags().remove(cell.getItem());
+                            //listBoxMain.getItems().remove(cell.getItem());
                             break;
                         case BACK_SPACE:
-                            currentImage.getTags().remove(cell.getItem());
-                            listBoxMain.getItems().remove(cell.getItem());
+                            //currentImage.getTags().remove(cell.getItem());
+                            //listBoxMain.getItems().remove(cell.getItem());
                             break;
                     }
                 }
