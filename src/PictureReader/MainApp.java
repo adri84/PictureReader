@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -35,12 +36,15 @@ public class MainApp extends Application {
     public ScrollPane imageOverview;
     public Pane imageDataView;
     public Locale mainLocale;
-    public WindowController windowController;
-    public ImageDataOverviewController dataOverviewC;
+
     public Image selectedImage;
     public String currentPath;
     boolean metadataCreated = false;
+    boolean displayTooltips = false;
+    boolean directorySelected = false;
 
+    public WindowController windowController;
+    public ImageDataOverviewController dataOverviewController;
 
     private ObservableList<Image> imageData = FXCollections.observableArrayList();
     private ObservableList<Image> tmpImageData = FXCollections.observableArrayList();
@@ -64,7 +68,7 @@ public class MainApp extends Application {
 
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(MainApp.class.getResource("view/FirstWindow.fxml"));
-            fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
+            fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale));
 
 
             FirstWindowController firstWController = new FirstWindowController(this);
@@ -83,6 +87,11 @@ public class MainApp extends Application {
         }
     }
 
+    public void loadControllers() {
+        windowController = new WindowController(this);
+        dataOverviewController = new ImageDataOverviewController(this);
+    }
+
     /**
      * Initializes the root layout.
      */
@@ -91,10 +100,9 @@ public class MainApp extends Application {
 
 
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
+            fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale));
             fxmlLoader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
 
-            windowController = new WindowController(this);
             fxmlLoader.setController(windowController);
 
             rootLayout = fxmlLoader.load();
@@ -113,6 +121,14 @@ public class MainApp extends Application {
             scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.centerOnScreen();
+
+            if(directorySelected) {
+                imageOverview.requestFocus();
+            }
+            else {
+                rootLayout.setCenter(new Label(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("dir.null")));
+            }
+
             primaryStage.show();
 
         } catch (IOException e) {
@@ -127,15 +143,12 @@ public class MainApp extends Application {
 
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
+        fxmlLoader.setResources(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale));
         fxmlLoader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
 
-
-        windowController = new WindowController(this);
         fxmlLoader.setController(windowController);
 
         showDataOverview();
-
 
         rootLayout = fxmlLoader.load();
         rootLayout.setCenter(imageOverview);
@@ -145,10 +158,25 @@ public class MainApp extends Application {
 
         scene = new Scene(rootLayout);
 
+        if(directorySelected) {
+            imageOverview.requestFocus();
+        }
 
         primaryStage.setScene(scene);
         primaryStage.show();
 
+    }
+
+    public void setDisplayTooltips() {
+        if(displayTooltips) {
+            displayTooltips = false;
+            windowController.setTooltips(displayTooltips);
+            dataOverviewController.setTooltips(displayTooltips);
+        }else {
+            displayTooltips = true;
+            windowController.setTooltips(displayTooltips);
+            dataOverviewController.setTooltips(displayTooltips);
+        }
     }
 
     public void showImageOverview(String path) {
@@ -195,10 +223,9 @@ public class MainApp extends Application {
             // Load person overview.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/ImageDataOverview.fxml"));
-            loader.setResources(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale));
+            loader.setResources(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale));
 
-            dataOverviewC = new ImageDataOverviewController(this);
-            loader.setController(dataOverviewC);
+            loader.setController(dataOverviewController);
 
             imageDataView = loader.load();
 
@@ -220,20 +247,20 @@ public class MainApp extends Application {
         }
     }
 
-    public boolean changeImagePath() {
+    public void changeImagePath() {
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(primaryStage);
 
         if (selectedDirectory != null) {
-
+            directorySelected = true;
             imageData.clear();
             this.showImageOverview(selectedDirectory.getAbsolutePath());
             rootLayout.setCenter(imageOverview);
-            return true;
         }
-
-        return false;
+        else {
+            directorySelected = false;
+        }
     }
 
     public TilePane setTileContent(String path) {
@@ -273,7 +300,6 @@ public class MainApp extends Application {
                 imageData.add(img);
                 tile.getChildren().addAll(img.imageView);
             }
-
         }
 
         if (!metadataIsSet) {
@@ -416,13 +442,13 @@ public class MainApp extends Application {
         if (selectedImage != null) {
 
             String toParseName = selectedImage.getImageName();
-            dataOverviewC.activateInputs(false);
-            dataOverviewC.setNameText(toParseName.substring(0, toParseName.lastIndexOf('.')));
-            dataOverviewC.setTagText(ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale).getString("image.text.add.tag"));
-            dataOverviewC.setTags(selectedImage.tags);
-            dataOverviewC.setCurrentImage(selectedImage);
+            dataOverviewController.activateInputs(false);
+            dataOverviewController.setNameText(toParseName.substring(0, toParseName.lastIndexOf('.')));
+            dataOverviewController.setTagText(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("image.text.add.tag"));
+            dataOverviewController.setTags(selectedImage.tags);
+            dataOverviewController.setCurrentImage(selectedImage);
         } else {
-            dataOverviewC.activateInputs(true);
+            dataOverviewController.activateInputs(true);
         }
 
 
@@ -506,17 +532,17 @@ public class MainApp extends Application {
             showSearchImageOverview();
             reloadRootLayout(mainLocale);
             if (toDisplay.size() == 1) {
-                ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale);
+                ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale);
                 windowController.setLabelText(r.getString("search.result.found") + " " + toDisplay.size() + " " + r.getString("search.result.one"));
             } else {
-                ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale);
+                ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale);
                 windowController.setLabelText(r.getString("search.result.found") + " " + toDisplay.size() + " " + r.getString("search.result.many"));
             }
 
         } else {
             setTmpImageData(toDisplay);
             showSearchImageOverview();
-            String label = ResourceBundle.getBundle("PictureReader.bundles.MyBundle", mainLocale).getString("search.result.null");
+            String label = ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("search.result.null");
             reloadRootLayout(mainLocale);
             windowController.setLabelText(label);
         }

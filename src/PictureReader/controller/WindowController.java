@@ -3,8 +3,8 @@ package PictureReader.controller;
 import PictureReader.MainApp;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,27 +18,27 @@ public class WindowController implements Initializable{
     private MainApp mainApp;
     private ResourceBundle resource;
 
-    @FXML
-    public javafx.scene.control.TextField tagsSearchInput;
+    public TextField tagsSearchInput;
+    public Button tagsSearchButton;
+    public Button tagsSearchReset;
+    public Label labelResults;
 
-    @FXML
-    public javafx.scene.control.Button tagsSearchButton;
+    public WindowController(MainApp s) {
+        this.mainApp = s;
+    }
 
-    @FXML
-    public javafx.scene.control.Button tagsSearchReset;
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.resource = resources;
+        labelResults.setText(resources.getString("search.text.desc"));
+    }
 
-    @FXML
-    public javafx.scene.control.Label labelResults;
-
-
-    @FXML
-    private void openDir() {
+    public void openDir() {
         System.out.println("open directory");
         mainApp.createMetadata();
         mainApp.changeImagePath();
     }
 
-    @FXML
     public void searchTags() {
 
         if (!tagsSearchInput.getText().equals("")) {
@@ -53,7 +53,6 @@ public class WindowController implements Initializable{
 
     }
 
-    @FXML
     public void resetTags() {
         try {
             mainApp.backToMainView(resource.getString("search.reset"));
@@ -62,72 +61,66 @@ public class WindowController implements Initializable{
         }
     }
 
-    public WindowController(MainApp s) {
-        this.mainApp = s;
-    }
-
-
-    @FXML
-    private void saveas() {
+    public void saveas() {
         System.out.println("save as");
         mainApp.createMetadata();
     }
 
-
-    @FXML
-    public void exitApplication(ActionEvent event) {
-        Platform.exit();
-    }
-
-    @FXML
-    private void rename() {
-        System.out.println("rename");
-    }
-
-
-    @FXML
-    private void addTag() {
-        System.out.println("add tag");
-    }
-
-    @FXML
-    private void modTag() {
-        System.out.println("modify tag");
-    }
-
-
-
-    @FXML
-    private void changeToFr() {
+    public void changeToFr() {
 
         System.out.println("change to french");
         mainApp.setLanguage("fr",true);
     }
 
-    @FXML
-    private void changeToEn() {
+    public void changeToEn() {
         System.out.println("change to english");
-        mainApp.setLanguage("en",true);    }
+        mainApp.setLanguage("en",true);
+    }
 
-    @FXML
-    private void changeToRu() {
+    public void changeToRu() {
         System.out.println("change to russian");
         mainApp.setLanguage("ru",true);
     }
 
-    @FXML
-    private void about() {
+    public void about() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Look, an Information Dialog");
+        alert.setContentText("I have a great message for you!");
+        alert.showAndWait();
+
         System.out.println("about");
+    }
+
+    public void helpMode() {
+        mainApp.setDisplayTooltips();
+        System.out.println("about");
+    }
+
+    public void exitApplication(ActionEvent event) {
+        Platform.exit();
+    }
+
+
+    public void setTooltips(boolean displayTooltips) {
+        ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.helpTooltips");
+        if (displayTooltips == true) {
+            Tooltip.install(tagsSearchInput, new Tooltip("test")); //This is for showing
+            //Tooltip.install(tagsSearchInput, new Tooltip(r.getString("test"))); //This is for showing
+            Tooltip.install(tagsSearchButton, new Tooltip("searchB")); //This is for showing
+            Tooltip.install(tagsSearchReset, new Tooltip("resetB")); //This is for showing
+            Tooltip.install(labelResults, new Tooltip("labelR")); //This is for showing
+        }
+        else {
+            Tooltip.uninstall(tagsSearchInput, new Tooltip("input")); //This is for showing
+            Tooltip.uninstall(tagsSearchButton, new Tooltip("searchB")); //This is for showing
+            Tooltip.uninstall(tagsSearchReset, new Tooltip("resetB")); //This is for showing
+            Tooltip.uninstall(labelResults, new Tooltip("labelR")); //This is for showing
+        }
     }
 
     public void setLabelText(String text) {
         this.labelResults.setText(text);
     }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.resource = resources;
-        labelResults.setText(resources.getString("search.text"));
-    }
-
 }

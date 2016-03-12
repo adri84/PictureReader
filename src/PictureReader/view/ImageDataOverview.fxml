@@ -16,12 +16,12 @@
       <ListView fx:id="listBoxMain" editable="true" layoutY="155.0" prefHeight="141.0" prefWidth="200.0" />
       <TextField fx:id="inputTextTag" layoutX="17.0" layoutY="329.0" onAction="#addTag" onMouseClicked="#acceptTagInput" promptText="%image.label.text" />
       <Label layoutX="35.0" layoutY="304.0" text="%image.label.add.tag" />
-      <Button layoutX="52.0" layoutY="363.0" mnemonicParsing="false" onAction="#addTag" prefHeight="21.0" prefWidth="96.0" text="%image.button.add.tag">
+      <Button fx:id="addTagButton" layoutX="52.0" layoutY="363.0" mnemonicParsing="false" onAction="#addTag" prefHeight="21.0" prefWidth="96.0" text="%image.button.add.tag">
          <font>
             <Font size="10.0" />
          </font>
       </Button>
-      <Button layoutX="52.0" layoutY="65.0" mnemonicParsing="false" onAction="#saveNameChanges" prefHeight="21.0" prefWidth="96.0" text="%image.button.save.name">
+      <Button fx:id="saveImageButton" layoutX="52.0" layoutY="65.0" mnemonicParsing="false" onAction="#saveNameChanges" prefHeight="21.0" prefWidth="96.0" text="%image.button.save.name">
          <font>
             <Font size="10.0" />
          </font>

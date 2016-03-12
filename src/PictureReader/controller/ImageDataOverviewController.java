@@ -6,12 +6,11 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 
 import java.net.URL;
@@ -20,28 +19,35 @@ import java.util.ResourceBundle;
 
 public class ImageDataOverviewController implements Initializable {
 
+    //Références
     public final MainApp mainApp;
-    public Image currentImage;
-    public String listViewInitText;
     final ObservableList<String> listItems;
-    @FXML
-    public javafx.scene.control.TextField nameText;
-    @FXML
-    public javafx.scene.control.TextField inputTextTag;
-    @FXML
+    public Image currentImage;
+
+    //Composants
+    public TextField nameText;
+    public TextField inputTextTag;
+    public Button saveImageButton;
+    public Button addTagButton;
     public ListView<String> listBoxMain;
+    public String listViewInitText;
 
-    @FXML
-    public void setNameText(String s) {
-        nameText.setText(s);
+
+    public ImageDataOverviewController(MainApp mainApp) {
+        this.mainApp = mainApp;
+        listItems = FXCollections.observableArrayList();
     }
 
-    public void setTagText(String s) {
-        inputTextTag.setPromptText(s);
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        initializeListView();
+        listViewInitText = resources.getString("listview.text");
+
+        if (currentImage == null) {
+            listItems.add(listViewInitText);
+        }
     }
 
-
-    @FXML
     public void setTags(ArrayList<String> tags) {
         listItems.clear();
 
@@ -52,7 +58,6 @@ public class ImageDataOverviewController implements Initializable {
         }
     }
 
-    @FXML
     public void addTag() {
         if (!inputTextTag.getText().equals("")) {
             listItems.add(inputTextTag.getText());
@@ -61,26 +66,16 @@ public class ImageDataOverviewController implements Initializable {
         }
     }
 
-    @FXML
     public void acceptNameInput() {
-        if(currentImage == null) {
+        if (currentImage == null) {
             nameText.getParent().requestFocus();
         }
     }
 
-    @FXML
     public void acceptTagInput() {
-        if(currentImage == null) {
+        if (currentImage == null) {
             nameText.getParent().requestFocus();
         }
-    }
-
-    public ImageDataOverviewController(MainApp mainApp) {
-        this.mainApp = mainApp;
-        listItems = FXCollections.observableArrayList();
-    }
-    public void setCurrentImage(Image currentImage) {
-        this.currentImage = currentImage;
     }
 
     public void saveTagChanges() {
@@ -108,7 +103,6 @@ public class ImageDataOverviewController implements Initializable {
     }
 
     public void saveNameChanges() {
-
         if (!nameText.getText().equals("")) {
             String nameNoExt = currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.'));
 
@@ -128,7 +122,8 @@ public class ImageDataOverviewController implements Initializable {
             System.out.println("Veuillez selectionner un fichier !");
         }
     }
-    public void initializeListView() {
+
+    private void initializeListView() {
         listBoxMain.setItems(listItems);
 
         listBoxMain.setCellFactory(lv -> {
@@ -156,6 +151,27 @@ public class ImageDataOverviewController implements Initializable {
             });
             contextMenu.getItems().addAll(deleteItem);
 
+            listBoxMain.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+
+                @Override
+                public void handle(KeyEvent keyEvent) {
+
+                    KeyCode keyPressed = keyEvent.getCode();
+
+                    switch (keyPressed) {
+                        case DELETE:
+                            currentImage.getTags().remove(cell.getItem());
+                            listBoxMain.getItems().remove(cell.getItem());
+                            break;
+                        case BACK_SPACE:
+                            currentImage.getTags().remove(cell.getItem());
+                            listBoxMain.getItems().remove(cell.getItem());
+                            break;
+                    }
+                }
+            });
+
+
             cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
                 if (isNowEmpty) {
                     cell.setContextMenu(null);
@@ -179,10 +195,37 @@ public class ImageDataOverviewController implements Initializable {
 
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        initializeListView();
-        listViewInitText = resources.getString("listview.text");
-        listItems.add(listViewInitText);
+    public void setNameText(String s) {
+        nameText.setText(s);
+    }
+
+    public void setTagText(String s) {
+        inputTextTag.setPromptText(s);
+    }
+
+    public void setCurrentImage(Image currentImage) {
+        this.currentImage = currentImage;
+    }
+
+    public void setTooltips(boolean displayTooltips) {
+
+        ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.helpTooltips");
+
+        if (displayTooltips == true) {
+            Tooltip.install(nameText, new Tooltip("test")); //This is for showing
+            Tooltip.install(saveImageButton, new Tooltip("searchB")); //This is for showing
+            Tooltip.install(listBoxMain, new Tooltip("test")); //This is for showing
+            Tooltip.install(inputTextTag, new Tooltip("resetB")); //This is for showing
+            Tooltip.install(addTagButton, new Tooltip("labelR")); //This is for showing
+
+        }
+        else {
+            Tooltip.uninstall(nameText, new Tooltip("input")); //This is for showing
+            Tooltip.uninstall(saveImageButton, new Tooltip("searchB")); //This is for showing
+            Tooltip.uninstall(listBoxMain, new Tooltip("test")); //This is for showing
+            Tooltip.uninstall(inputTextTag, new Tooltip("resetB")); //This is for showing
+            Tooltip.uninstall(addTagButton, new Tooltip("labelR")); //This is for showing
+        }
+
     }
 }

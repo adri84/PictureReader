@@ -40,11 +40,10 @@ public class FirstWindowController implements Initializable{
 
     @FXML
     private void openDir() {
-
-
         System.out.println("open directory");
+        mainApp.loadControllers();
         mainApp.initRootLayout();
-        mainApp.dataOverviewC.activateInputs(true);
+        mainApp.dataOverviewController.activateInputs(true);
     }
 
 
