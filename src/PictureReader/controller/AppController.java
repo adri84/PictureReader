@@ -34,6 +34,7 @@ public class AppController {
     public Scene scene;
     public ScrollPane imageOverview;
     public Pane imageDataView;
+
     public Locale mainLocale;
 
     public Image selectedImage;
@@ -522,6 +523,8 @@ public class AppController {
 
             changeImagePath();
             showDataOverview();
+            defaultTooltips();
+
 
 
             rootLayout.setCenter(imageOverview);
@@ -562,6 +565,8 @@ public class AppController {
         fxmlLoader.setController(windowController);
 
         showDataOverview();
+        defaultTooltips();
+
 
         rootLayout = fxmlLoader.load();
         rootLayout.setCenter(imageOverview);
@@ -592,6 +597,12 @@ public class AppController {
         }
     }
 
+    public void defaultTooltips() {
+        displayTooltips = false;
+        windowController.setTooltips(false);
+        dataOverviewController.setTooltips(false);
+    }
+
     public void showImageOverview(String path) {
         try {
             // Load person overview.
@@ -620,5 +631,9 @@ public class AppController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Locale getMainLocale() {
+        return mainLocale;
     }
 }

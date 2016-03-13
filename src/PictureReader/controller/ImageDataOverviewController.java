@@ -207,7 +207,7 @@ public class ImageDataOverviewController implements Initializable {
 
     public void setTooltips(boolean displayTooltips) {
 
-        ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.helpTooltips");
+        ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.helpTooltips",mainApp.getMainLocale());
 
         if (displayTooltips == true) {
             Tooltip.install(nameText, new Tooltip(r.getString("image.label.text.desc")));

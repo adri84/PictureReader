@@ -47,7 +47,7 @@ public class WindowController implements Initializable{
                 e.printStackTrace();
             }
         } else {
-            setLabelText(ResourceBundle.getBundle("PictureReader.bundles.NodeNames").getString("search.result.empty"));
+            setLabelText(ResourceBundle.getBundle("PictureReader.bundles.NodeNames",mainApp.getMainLocale()).getString("search.result.empty"));
         }
 
     }
@@ -103,7 +103,7 @@ public class WindowController implements Initializable{
 
 
     public void setTooltips(boolean displayTooltips) {
-        ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.helpTooltips");
+        ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.helpTooltips",mainApp.getMainLocale());
         if (displayTooltips == true) {
             Tooltip.install(tagsSearchInput, new Tooltip(r.getString("search.text.desc")));
             Tooltip.install(tagsSearchButton, new Tooltip(r.getString("button.search.desc")));
