@@ -583,8 +583,18 @@ public class AppController {
         scene = new Scene(rootLayout);
 
         if(directorySelected) {
-            imageOverview.requestFocus();
+            if(imageData.size() == 0) {
+                rootLayout.setCenter(new Label(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("dir.empty")));
+
+            }
+            else {
+                imageOverview.requestFocus();
+            }
         }
+        else {
+            rootLayout.setCenter(new Label(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("dir.null")));
+        }
+
 
         primaryStage.setScene(scene);
         primaryStage.show();
