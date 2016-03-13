@@ -370,6 +370,14 @@ public class AppController {
 
     public void searchByTags(String[] searchTags) throws IOException {
 
+        if (selectedImage != null) {
+            selectedImage.imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.0), 0, 0, 0, 0);");
+            selectedImage = null;
+        }
+
+        dataOverviewController.clearDataOverview();
+
+
 
         ObservableList<Image> toDisplay = FXCollections.observableArrayList();
         ObservableList<Image> tmp = FXCollections.observableArrayList(imageData);
@@ -405,8 +413,13 @@ public class AppController {
     public void backToMainView(String resultat) throws IOException {
         setTmpImageData(imageData);
         showSearchImageOverview();
+        dataOverviewController.clearDataOverview();
+
+        if (selectedImage != null) {
+            selectedImage.imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.0), 0, 0, 0, 0);");
+            selectedImage = null;
+        }
         reloadRootLayout(mainLocale);
-        windowController.setLabelText(resultat);
     }
 
     public void renameImage(Image currentImage, String newName) {
@@ -596,7 +609,6 @@ public class AppController {
 
         scene = new Scene(rootLayout);
 
-        System.out.println(imageData.size());
 
         if(directorySelected) {
             imageOverview.requestFocus();
