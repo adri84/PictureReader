@@ -103,24 +103,26 @@ public class ImageDataOverviewController implements Initializable {
     }
 
     public void saveNameChanges() {
+
+
         if (!nameText.getText().equals("")) {
             String nameNoExt = currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.'));
 
             if (!nameText.getText().equals(nameNoExt)) {
                 mainApp.renameImage(this.currentImage, nameText.getText());
 
-                currentImage = null;
-                nameText.clear();
-                inputTextTag.clear();
-                listItems.clear();
-                listItems.add(listViewInitText);
-            } else {
-                System.out.println("Même nom de fichier !");
-                //alertbox erreur fichier?
+                clearDataOverview();
+
             }
-        } else {
-            System.out.println("Veuillez selectionner un fichier !");
         }
+    }
+
+    public void clearDataOverview() {
+        currentImage = null;
+        nameText.clear();
+        inputTextTag.clear();
+        listItems.clear();
+        listItems.add(listViewInitText);
     }
 
     private void initializeListView() {
@@ -151,23 +153,19 @@ public class ImageDataOverviewController implements Initializable {
             });
             contextMenu.getItems().addAll(deleteItem);
 
-            listBoxMain.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+            listBoxMain.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
 
-                @Override
-                public void handle(KeyEvent keyEvent) {
+                KeyCode keyPressed = keyEvent.getCode();
 
-                    KeyCode keyPressed = keyEvent.getCode();
-
-                    switch (keyPressed) {
-                        case DELETE:
-                            //currentImage.getTags().remove(cell.getItem());
-                            //listBoxMain.getItems().remove(cell.getItem());
-                            break;
-                        case BACK_SPACE:
-                            //currentImage.getTags().remove(cell.getItem());
-                            //listBoxMain.getItems().remove(cell.getItem());
-                            break;
-                    }
+                switch (keyPressed) {
+                    case DELETE:
+                        //currentImage.getTags().remove(cell.getItem());
+                        //listBoxMain.getItems().remove(cell.getItem());
+                        break;
+                    case BACK_SPACE:
+                        //currentImage.getTags().remove(cell.getItem());
+                        //listBoxMain.getItems().remove(cell.getItem());
+                        break;
                 }
             });
 

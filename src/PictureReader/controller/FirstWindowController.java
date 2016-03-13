@@ -4,9 +4,12 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -25,14 +28,25 @@ public class FirstWindowController implements Initializable{
     @FXML
     public RadioButton radio_ru;
 
+    public Label welcomeMess;
+    public Label chooseLang;
+    public Button chooseDirB;
+    public Button exitB;
+
+
     @FXML
     public void changeLang() {
         if (radio_fr.isSelected()) {
             mainApp.setLanguage("fr",false);
+            changeLanguage("fr");
         } else if (radio_en.isSelected()) {
             mainApp.setLanguage("en",false);
+            changeLanguage("en");
+
         } else {
             mainApp.setLanguage("ru",false);
+            changeLanguage("ru");
+
         }
     }
 
@@ -45,6 +59,16 @@ public class FirstWindowController implements Initializable{
         mainApp.dataOverviewController.activateInputs(true);
     }
 
+    public void changeLanguage(String l) {
+        ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.NodeNames",new Locale(l));
+
+        welcomeMess.setText(r.getString("firstwindow.label.welcome"));
+        chooseLang.setText(r.getString("firstwindow.label.chooseLang"));
+        chooseDirB.setText(r.getString("firstwindow.button.chooseDir"));
+        exitB.setText(r.getString("firstwindow.button.exit"));
+
+    }
+
 
     public FirstWindowController(AppController s) {
         this.mainApp = s;
@@ -55,6 +79,8 @@ public class FirstWindowController implements Initializable{
     public void exitApplication(ActionEvent event) {
         Platform.exit();
     }
+
+
 
 
     @Override

@@ -14,7 +14,7 @@
    <center>
       <TilePane alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Choose language:">
+            <Label fx:id="chooseLang" text="%firstwindow.label.chooseLang">
                <padding>
                   <Insets bottom="10.0" />
                </padding></Label>
@@ -35,15 +35,15 @@
    <bottom>
       <ToolBar BorderPane.alignment="CENTER">
         <items>
-          <Button mnemonicParsing="false" onAction="#openDir" prefHeight="30.0" prefWidth="190.0" text="Choose Directory" />
-            <Button mnemonicParsing="false" onAction="#exitApplication" prefHeight="30.0" prefWidth="190.0" text="Exit" />
+          <Button fx:id="chooseDirB" mnemonicParsing="false" onAction="#openDir" prefHeight="30.0" prefWidth="190.0" text="%firstwindow.button.chooseDir" />
+            <Button fx:id="exitB" mnemonicParsing="false" onAction="#exitApplication" prefHeight="30.0" prefWidth="190.0" text="%firstwindow.button.exit" />
         </items>
       </ToolBar>
    </bottom>
    <top>
       <TilePane alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-            <Label text="mettre des infos ici genre bienvenue etc..">
+            <Label fx:id="welcomeMess" text="%firstwindow.label.welcome">
                <TilePane.margin>
                   <Insets />
                </TilePane.margin>

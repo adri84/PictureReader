@@ -7,13 +7,13 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -53,7 +53,7 @@ public class AppController {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("PictureReader");
         mainLocale = new Locale("en");
-        displayFistWindow();
+        displayFirstWindow();
     }
 
     public void showDataOverview() {
@@ -248,13 +248,14 @@ public class AppController {
         BorderPane borderPane = new BorderPane();
         ImageView imageView = new ImageView();
         javafx.scene.image.Image image = new javafx.scene.image.Image(new FileInputStream(imageFile));
+
         imageView.setImage(image);
         imageView.setStyle("-fx-background-color: BLACK");
         imageView.setFitHeight(primaryStage.getHeight() - 10);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
-
         imageView.setCache(true);
+
         borderPane.setCenter(imageView);
         borderPane.setStyle("-fx-background-color: BLACK");
 
@@ -395,6 +396,7 @@ public class AppController {
 
     public void renameImage(Image currentImage, String newName) {
 
+
         String extension = currentImage.getImagePath().substring(currentImage.getImagePath().lastIndexOf(".") + 1, currentImage.getImagePath().length());
 
         File oldMetadataFile = new File(currentPath + "/.metadata/" + currentImage.getImageName().substring(0, currentImage.getImageName().lastIndexOf('.')));
@@ -404,11 +406,14 @@ public class AppController {
         File newImage = new File(currentPath + "/" + newName + "." + extension);
 
 
+
+
+
         try {
             FileUtils.moveFile(oldMetadataFile, newMetadataFile);
             FileUtils.moveFile(oldImage, newImage);
         } catch (IOException e) {
-            e.printStackTrace();
+            exeptionWindow(e);
         }
 
         currentImage.setImageName(newName);
@@ -429,7 +434,40 @@ public class AppController {
         this.tmpImageData = FXCollections.observableArrayList(tmpImageData);
     }
 
-    public void displayFistWindow() {
+    public void exeptionWindow(Exception ex) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Exception Dialog");
+        alert.setContentText(ex.getCause().getMessage());
+
+
+        // Create expandable Exception.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        alert.getDialogPane().setExpandableContent(expContent);
+
+        alert.showAndWait();
+    }
+
+    public void displayFirstWindow() {
         try {
 
 

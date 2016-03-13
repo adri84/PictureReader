@@ -47,7 +47,7 @@ public class WindowController implements Initializable{
                 e.printStackTrace();
             }
         } else {
-            setLabelText("Vous devez entrer des mots clés");
+            setLabelText(ResourceBundle.getBundle("PictureReader.bundles.NodeNames").getString("search.result.empty"));
         }
 
     }
