@@ -82,11 +82,14 @@ public class WindowController implements Initializable{
     }
 
     public void about() {
+
+        ResourceBundle r = ResourceBundle.getBundle("PictureReader.bundles.NodeNames",mainApp.getMainLocale());
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Look, an Information Dialog");
-        alert.setContentText("I have a great message for you!");
+        alert.setTitle(r.getString("about.title"));
+        alert.setHeaderText(r.getString("about.header"));
+        alert.setContentText(r.getString("about.content"));
         alert.showAndWait();
 
         System.out.println("about");
