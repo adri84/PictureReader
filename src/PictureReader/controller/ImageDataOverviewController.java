@@ -118,11 +118,16 @@ public class ImageDataOverviewController implements Initializable {
     }
 
     public void clearDataOverview() {
-        currentImage = null;
-        nameText.clear();
-        inputTextTag.clear();
-        listItems.clear();
-        listItems.add(listViewInitText);
+        if (nameText != null && inputTextTag != null && listItems != null) {
+            currentImage = null;
+            nameText.clear();
+            inputTextTag.clear();
+            listItems.clear();
+        }
+
+        if (listItems != null) {
+            listItems.add(listViewInitText);
+        }
     }
 
     private void initializeListView() {

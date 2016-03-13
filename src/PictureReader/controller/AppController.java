@@ -95,7 +95,21 @@ public class AppController {
             directorySelected = true;
             imageData.clear();
             this.showImageOverview(selectedDirectory.getAbsolutePath());
-            rootLayout.setCenter(imageOverview);
+            dataOverviewController.clearDataOverview();
+
+            if(directorySelected) {
+
+                if(imageData.size() == 0) {
+                    rootLayout.setCenter(new Label(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("dir.empty")));
+                }
+                else {
+                    rootLayout.setCenter(imageOverview);
+                }
+            }
+            else {
+                rootLayout.setCenter(new Label(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("dir.null")));
+            }
+
         }
         else {
             directorySelected = false;
@@ -582,17 +596,10 @@ public class AppController {
 
         scene = new Scene(rootLayout);
 
-        if(directorySelected) {
-            if(imageData.size() == 0) {
-                rootLayout.setCenter(new Label(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("dir.empty")));
+        System.out.println(imageData.size());
 
-            }
-            else {
-                imageOverview.requestFocus();
-            }
-        }
-        else {
-            rootLayout.setCenter(new Label(ResourceBundle.getBundle("PictureReader.bundles.NodeNames", mainLocale).getString("dir.null")));
+        if(directorySelected) {
+            imageOverview.requestFocus();
         }
 
 
